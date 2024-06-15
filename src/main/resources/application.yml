@@ -1,0 +1,19 @@
+server:
+ port : 8090
+
+spring:
+  application:
+    name : volumen
+  thymeleaf:
+    cache : false
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  datasource:
+    url: jdbc:postgresql://localhost:5432/volumendev1
+    username : volumendev1
+    password : password
+hibernate : 
+  connection : 
+    autocommit : false
