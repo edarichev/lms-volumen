@@ -14,6 +14,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/volumendev1
     username : volumendev1
     password : password
+  web : 
+    resources :
+      static-locations : classpath:/resources
 hibernate : 
   connection : 
     autocommit : false

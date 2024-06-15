@@ -12,19 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
 	@GetMapping("/")
-	public String viewBooks() {
-		Configuration configuration = new AnnotationConfiguration().configure();
-        var sessionFactory = configuration.buildSessionFactory();
-        org.hibernate.Session session = null;
-        try {
-			session = sessionFactory.openSession();
-			
-		} catch (HibernateException e) {
-			e.printStackTrace();
-		} finally {
-			if (session != null)
-				session.close();
-		}
+	public String home() {
+		
 		return "home";
 	}
 }
