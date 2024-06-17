@@ -4,15 +4,14 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <meta charset="UTF-8" />
-<title th:text="#{mainpage.title}"></title>
+<title th:text="#{category.page_title}"></title>
 <link rel="stylesheet" th:href="@{/static/css/common.css}" />
 </head>
 <body>
     <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
-    <h1 th:text="#{greeting}"></h1>
-    <p><a th:href="@{/category}">Categories</a></p>
-     <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
-     
+    <h1 th:text="#{category.page_title}"></h1>
+    <a th:href="@{/category/add}" th:text="#{category.add}"></a>
+    <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
 	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>
 </html>

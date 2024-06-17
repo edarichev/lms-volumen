@@ -13,7 +13,7 @@
         <!-- SQL -->
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.show_sql">true</property>
-        <property name="hibernate.hbm2ddl.auto">create</property>
+        <property name="hibernate.hbm2ddl.auto">none</property>
         <property name="hibernate.connection.autocommit">false</property>
     </session-factory>
 </hibernate-configuration>

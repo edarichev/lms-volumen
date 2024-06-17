@@ -1,11 +1,10 @@
 package volumen.data;
 
+import org.springframework.data.repository.CrudRepository;
+
 import volumen.model.CourseCategory;
 
-public class CourseCategoryRepository extends RepositoryBase<CourseCategory> {
+public interface CourseCategoryRepository extends CrudRepository<CourseCategory, Long> {
 
-	public CourseCategoryRepository() {
-		super(CourseCategory.class);
-	}
-
+	
 }

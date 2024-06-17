@@ -4,7 +4,9 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -16,7 +18,7 @@ import lombok.Data;
 @Data
 public class Answer {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	/**
@@ -25,6 +27,10 @@ public class Answer {
 	@NotNull
 	@Size(min = 1, max = 256)
 	private String text;
+	
+	@NotNull
+	@ManyToOne
+	private TestQuestion testQuestion;
 
 	/**
 	 * True if this variant is valid. Required.

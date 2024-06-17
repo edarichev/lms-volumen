@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<section th:fragment="category">
+    <ul>
+        <li th:each="cat : ${categories}">
+            <a th:href="@{/category/{id}(id=${cat.value.id})}" th:text="${cat.value.name}">CATEGORY NAME</a>
+            &nbsp; &nbsp;<a th:href="@{/category/edit/{id}(id=${cat.value.id})}" th:text="#{edit}">EDIT</a>
+            <section th:insert="~{@{categorytreefragment} :: category}" th:with="categories=${cat.items}"></section>
+        </li>
+    </ul>
+</section>
+</body>
+</html>

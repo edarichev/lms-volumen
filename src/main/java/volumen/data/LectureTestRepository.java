@@ -1,11 +1,9 @@
 package volumen.data;
 
+import org.springframework.data.repository.CrudRepository;
+
 import volumen.model.LectureTest;
 
-public class LectureTestRepository extends RepositoryBase<LectureTest>{
-
-	public LectureTestRepository() {
-		super(LectureTest.class);
-	}
+public interface LectureTestRepository extends CrudRepository<LectureTest, Long>{
 
 }

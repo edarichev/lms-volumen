@@ -10,9 +10,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -20,20 +23,25 @@ import lombok.Data;
 @Data
 public class CourseCategory {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
 	@NotNull
 	private String name;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	private String description;
+	
+	@ManyToOne
 	@JoinColumn(name = "parent_id")
+	private CourseCategory parent;
+	
+	@OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+	@OnDelete(action = OnDeleteAction.RESTRICT)
 	private List<CourseCategory> categories = new ArrayList<>();
 
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OnDelete(action = OnDeleteAction.RESTRICT)
 	@JoinColumn(name = "coursecategory_id")
 	private List<Course> courses = new ArrayList<>();
 	

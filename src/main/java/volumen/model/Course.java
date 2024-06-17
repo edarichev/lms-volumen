@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -23,6 +25,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import volumen.User;
 
 /**
  * Represent a learning course with lectures, tests, exams etc.
@@ -31,8 +34,11 @@ import lombok.Data;
 @Data
 public class Course {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
+	@ManyToOne
+	private User createdBy;
 	
 	/**
 	 * The name (title) of the course.
@@ -60,4 +66,5 @@ public class Course {
 	@JoinColumn(name = "course_id")
 	@OrderColumn(name = "sequenceNumber")
 	private List<Chapter> chapters = new ArrayList<Chapter>();
+	
 }

@@ -14,6 +14,16 @@ spring:
     url: jdbc:postgresql://localhost:5432/volumendev1
     username : volumendev1
     password : password
+    driver-class-name : org.postgresql.Driver
+  jpa : 
+    show-sql: true
+    hibernate :
+      ddl-auto : none # create
+    properties : 
+      hibernate :
+        dialect : org.hibernate.dialect.PostgreSQLDialect
+#        generate_statistics : true
+        enable_lazy_load_no_trans : true
   web : 
     resources :
       static-locations : classpath:/resources

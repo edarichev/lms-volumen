@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8" />
+<title th:text="${pageTitle}"></title>
+<link rel="stylesheet" th:href="@{/static/css/common.css}" />
+<script type="text/javascript" src="@{/static/css/common.js}"></script>
+</head>
+<body>
+	<th:block th:insert="~{pagefragments.html :: header}">
+	</th:block>
+	<h1 th:text="${pageTitle}"></h1>
+	<form method="post" th:object="${formData}" id="add_category_form">
+	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
+	   <span class="error" th:if="${#fields.hasErrors('*')}">ошибки</span>
+		<ul th:if="${#fields.hasErrors('*')}">
+		  <li th:each="error : ${#fields.errors('*')}" th:text="${error}">ERROR</li>
+		</ul>
+		<table>
+			<tr>
+				<td><label th:text="#{category.name}"></label></td>
+				<td><input type="text" id="category_name" name="category_name" th:field="*{name}" />
+				<span class="error" th:text="${requiredError}"></span></td>
+			</tr>
+            <tr>
+                <td><label th:text="#{category.description_optional}"></label></td>
+                <td><input type="text" id="category_description" name="category_description" th:field="*{description}" /></td>
+            </tr>
+			<tr>
+				<td><label th:text="#{category.parent_category}"></label></td>
+				<td><select id="parentCategory" name="parentCategory" th:field="*{parentCategoryId}">
+						<option th:each="category : ${categories}" th:value="${category.id}"
+							th:text="${category.name}"></option>
+				</select></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td><input type="submit" th:value="#{save}" /> &nbsp;
+				<input type="button" th:value="#{delete}" /></td>
+			</tr>
+		</table>
+		<input type="hidden" th:field="*{categoryId}" name="categoryId" id="categoryId" />
+	</form>
+
+	<th:block th:insert="~{pagefragments.html :: footer}">
+	</th:block>
+</body>
+</html>

@@ -10,11 +10,13 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -25,13 +27,14 @@ import lombok.Data;
 public class LectureTest {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@NotNull
 	@OneToOne
 	private Lecture lecture;
 
-	@JoinColumn(name = "lecture_id")
+	@JoinColumn(name = "lecture_test_id")
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<TestQuestion> questions = new ArrayList<TestQuestion>();
