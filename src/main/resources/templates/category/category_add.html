@@ -6,7 +6,7 @@
 <meta charset="UTF-8" />
 <title th:text="${pageTitle}"></title>
 <link rel="stylesheet" th:href="@{/static/css/common.css}" />
-<script type="text/javascript" src="@{/static/css/common.js}"></script>
+<script type="text/javascript" th:src="@{/static/script/common.js}"></script>
 </head>
 <body>
 	<th:block th:insert="~{pagefragments.html :: header}">
@@ -33,12 +33,24 @@
 				<td><select id="parentCategory" name="parentCategory" th:field="*{parentCategoryId}">
 						<option th:each="category : ${categories}" th:value="${category.id}"
 							th:text="${category.name}"></option>
-				</select></td>
+				</select><span class="error" th:text="${categoryError}"></span></td>
 			</tr>
 			<tr>
 				<td></td>
-				<td><input type="submit" th:value="#{save}" /> &nbsp;
-				<input type="button" th:value="#{delete}" /></td>
+				<td>
+				<table>
+				<tr>
+				<td><input type="submit" th:value="#{save}" /></td>
+				<td><div th:if="${formData.categoryId > 0}"> 
+                <input type="button" th:value="#{delete}"
+                th:data-id="${formData.categoryId}"
+                th:data-action="@{/category/delete/}"
+                th:data-msg="#{confirm.delete_category}" 
+                onclick="return fnConfirmDeleteCategory(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));" />
+                </div></td>
+				</tr>
+				</table>
+				</td>
 			</tr>
 		</table>
 		<input type="hidden" th:field="*{categoryId}" name="categoryId" id="categoryId" />

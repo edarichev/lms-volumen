@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.util.Assert;
+
 import volumen.exceptions.CircularCategoryReferenceException;
 import volumen.model.CourseCategory;
 import volumen.model.dto.IdNamePair;
@@ -28,7 +30,7 @@ public class CategoryTreeBuilder {
 		// build the tree
 		// the root node always has no value - it is a container
 		CategoryNode root = new CategoryNode();
-		// to quick search
+		// for quick search
 		HashMap<Long, CategoryNode> map = new HashMap<>();
 		for (var item : list) {
 			map.put(item.getId(), new CategoryNode(item));
@@ -42,11 +44,39 @@ public class CategoryTreeBuilder {
 			if (item.getParent() == null) {
 				root.getItems().add(nodeOfThisItem);
 			} else {
-				CategoryNode parentOfThisItem = map.get(item.getParent().getId());
+				Long parentId = item.getParent().getId();
+				CategoryNode parentOfThisItem = map.get(parentId);
+				if (parentId != null && isParentOf(parentId, item.getId(), map))
+					throw new CircularCategoryReferenceException(item.getId(), item.getName());
 				parentOfThisItem.getItems().add(nodeOfThisItem);
 			}
 		}
 		return root;
+	}
+	
+	public static boolean isParentOf(long itemId, long parentId, List<CourseCategory> list) {
+		// for quick search
+		HashMap<Long, CategoryNode> map = new HashMap<>();
+		for (var item : list) {
+			map.put(item.getId(), new CategoryNode(item));
+		}
+		return isParentOf(itemId, parentId, map);
+	}
+	
+	public static boolean isParentOf(long itemId, long parentId, HashMap<Long, CategoryNode> container) {
+		var itemNode = container.get(itemId);
+		if (itemNode == null)
+			return false;
+		var item = itemNode.getValue();
+		while (true) {
+			var parent = item.getParent();
+			if (parent == null || parent.getId() == null)
+				break; // дошли до верха, это не родительский
+			if (parent.getId().longValue() == parentId)
+				return true;
+			item = parent;
+		}
+		return false;
 	}
 	
 	public static List<IdNamePair<Long>> buildStringItems(List<CourseCategory> collection, String indentWith) 

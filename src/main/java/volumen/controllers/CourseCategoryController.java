@@ -76,7 +76,7 @@ public class CourseCategoryController {
 		var form = new AddCourseCategoryForm();
 		model.addObject("formData", form);
 		model.addObject("categories", categories(true, "\u00A0\u00A0"));
-		model.addObject("pageTitle", messageSource.getMessage("category.page_title_add", null, null));
+		model.addObject("pageTitle", getMessage("category.page_title_add"));
 		return model;
 	}
 	
@@ -84,13 +84,13 @@ public class CourseCategoryController {
 	String postAdd(Model model, @ModelAttribute AddCourseCategoryForm formData, Errors errors) {
 		model.addAttribute("categories", categories(true, "\u00A0\u00A0"));
 		model.addAttribute("formData", formData);
-		model.addAttribute("pageTitle", messageSource.getMessage("category.page_title_add", null, null));
+		model.addAttribute("pageTitle", getMessage("category.page_title_add"));
 		if (errors.hasErrors()) {
 			log.error("Errors add category: " + errors.toString());
 			return VIEW_CATEGORY_ADD;
 		}
 		if (null == formData.getName() || formData.getName().isBlank()) {
-			String requiredError = messageSource.getMessage("error.category.name_required", null, null);
+			String requiredError = getMessage("error.category.name_required");
             model.addAttribute("requiredError", requiredError);
             return VIEW_CATEGORY_ADD;
         }
@@ -105,7 +105,7 @@ public class CourseCategoryController {
 		var form = new AddCourseCategoryForm();
 		model.addObject("formData", form);
 		model.addObject("categories", categories(true, "\u00A0\u00A0"));
-		model.addObject("pageTitle", messageSource.getMessage("category.page_title_edit", null, null));
+		model.addObject("pageTitle", getMessage("category.page_title_edit"));
 		var category = categoryRepo.findById(id);
 		if (category.isEmpty()) {
 			model.setViewName(VIEW_CATEGORY_NOT_FOUND);
@@ -128,13 +128,13 @@ public class CourseCategoryController {
 		}
 		model.addAttribute("categories", categories(true, "\u00A0\u00A0"));
 		model.addAttribute("formData", formData);
-		model.addAttribute("pageTitle", messageSource.getMessage("category.page_title_add", null, null));
+		model.addAttribute("pageTitle", getMessage("category.page_title_add"));
 		if (errors.hasErrors()) {
 			log.error("Errors add category: " + errors.toString());
 			return VIEW_EDIT_CATEGORY;
 		}
 		if (null == formData.getName() || formData.getName().isBlank()) {
-			String requiredError = messageSource.getMessage("error.category.name_required", null, null);
+			String requiredError = getMessage("error.category.name_required");
             model.addAttribute("requiredError", requiredError);
             return VIEW_EDIT_CATEGORY;
         }
@@ -143,21 +143,46 @@ public class CourseCategoryController {
 		category.setDescription(formData.getDescription());
 		var parentCategory = categoryRepo.findById(formData.getParentCategoryId());
 		CourseCategory parent = parentCategory.isPresent() ? parentCategory.get() : null;
+		if (parent != null) {
+			if (CategoryTreeBuilder.isParentOf(parent.getId(), category.getId(), getCategoriesList())) {
+				// circular reference
+				model.addAttribute("categoryError", getMessage("error.category.circular_reference"));
+				return VIEW_EDIT_CATEGORY;
+			}
+		}
 		category.setParent(parent);
 		categoryRepo.save(category);
 		return "redirect:/category";
 	}
 	
+	@GetMapping("/delete/{id}")
+	public String deleteCategory(@PathVariable("id") long id, Model model) {
+	    CourseCategory category = categoryRepo.findById(id).orElseThrow(
+	    		() -> new IllegalArgumentException(getMessage("error.category_not_found") + ": " + id)
+	    		);
+	    categoryRepo.delete(category);
+	    return "redirect:/category";
+	}
+	
+	private ArrayList<CourseCategory> categoriesList;
+	
+	ArrayList<CourseCategory> getCategoriesList() {
+		if (categoriesList == null) {
+			categoriesList = new ArrayList<CourseCategory>();
+			for (var cat : categoryRepo.findAll())
+				categoriesList.add(cat);
+		}
+		return categoriesList;
+	}
+
 	private List<IdNamePair<Long>> categories(boolean includeEmptyRoot, String indent) {
-		ArrayList<CourseCategory> list = new ArrayList<CourseCategory>();
-		for (var cat : categoryRepo.findAll())
-			list.add(cat);
+		ArrayList<CourseCategory> list = getCategoriesList();
 		List<IdNamePair<Long>> items;
 		try {
 			items = CategoryTreeBuilder.buildStringItems(list, indent);
 			// add empty item (NULL)
 			if (includeEmptyRoot)
-				items.add(0, new IdNamePair<Long>(0L, messageSource.getMessage("category.root", null, null)));
+				items.add(0, new IdNamePair<Long>(0L, getMessage("category.root")));
 		} catch (CircularCategoryReferenceException e) {
 			e.printStackTrace();
 			items = new ArrayList<IdNamePair<Long>>();//return an empty list
@@ -165,4 +190,7 @@ public class CourseCategoryController {
 		return items;
 	}
 	
+	private String getMessage(String key) {
+		return messageSource.getMessage(key, null, null);
+	}
 }

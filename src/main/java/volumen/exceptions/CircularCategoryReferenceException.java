@@ -28,4 +28,9 @@ public class CircularCategoryReferenceException extends Exception {
 		this.categoryName = name;
 	}
 
+	@Override
+	public String getMessage() {
+		return categoryName + ", id=" + id;
+	}
+
 }

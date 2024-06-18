@@ -1,7 +1,7 @@
 /**
  * 
  */
-function fnConfirmDeleteCategory(msg, actionUrl) {
+function fnConfirmDeleteCategory(msg, actionUrl, id) {
     if (confirm(msg))
-        window.location.replace(actionUrl);
+        window.location.replace(actionUrl + id);
 }
