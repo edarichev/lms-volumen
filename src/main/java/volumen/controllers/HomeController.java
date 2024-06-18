@@ -30,7 +30,7 @@ public class HomeController {
 		CategoryNode rootCat;
 		try {
 			rootCat = CategoryTreeBuilder.buildTree(target);
-			model.addObject("categories", rootCat.getItems());
+			model.addObject("categories", rootCat == null ? null : rootCat.getItems());
 		} catch (CircularCategoryReferenceException e) {
 			e.printStackTrace();
 			model.addObject("categories", new ArrayList<CategoryNode>());

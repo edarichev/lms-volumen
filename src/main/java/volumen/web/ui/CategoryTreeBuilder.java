@@ -131,6 +131,8 @@ public class CategoryTreeBuilder {
 	private static void doWorkTreeLevel(CategoryNode parent, List<CourseCategory> collection, 
 			List<IdNamePair<Long>> resultList,
 			String indentWith, int level) {
+		if (parent == null)
+			return;
 		if (parent.getValue() != null) {
 			String name = indentWith.repeat(level - 1) + parent.getValue().getName();
 			resultList.add(new IdNamePair<Long>(parent.getValue().getId(), name));

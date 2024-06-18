@@ -42,7 +42,7 @@ public class CourseCategory {
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@OnDelete(action = OnDeleteAction.RESTRICT)
-	@JoinColumn(name = "coursecategory_id")
+	@JoinColumn(name = "category_id")
 	private List<Course> courses = new ArrayList<>();
 	
 }

@@ -10,25 +10,25 @@
 	<th:block th:insert="~{pagefragments.html :: header}">
 	</th:block>
 	<h1 th:text="${pageTitle}"></h1>
-	<form method="post" th:object="${formData}" id="add_category_form">
+	<form method="post" th:object="${formData}" id="add_course_form">
 	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
-	   <span class="error" th:if="${#fields.hasErrors('*')}">ошибки</span>
+	   <span class="error" th:if="${#fields.hasErrors('*')}">ERRORS</span>
 		<ul th:if="${#fields.hasErrors('*')}">
 		  <li th:each="error : ${#fields.errors('*')}" th:text="${error}">ERROR</li>
 		</ul>
 		<table>
 			<tr>
-				<td><label th:text="#{category.name}"></label></td>
-				<td><input type="text" id="category_name" name="category_name" th:field="*{name}" />
+				<td><label th:text="#{course.name}"></label></td>
+				<td><input type="text" id="course_name" name="course_name" th:field="*{name}" />
 				<span class="error" th:text="${requiredError}"></span></td>
 			</tr>
             <tr>
-                <td><label th:text="#{category.description_optional}"></label></td>
-                <td><input type="text" id="category_description" name="category_description" th:field="*{description}" /></td>
+                <td><label th:text="#{course.description_optional}"></label></td>
+                <td><input type="text" id="course_description" name="course_description" th:field="*{description}" /></td>
             </tr>
 			<tr>
 				<td><label th:text="#{category.parent_category}"></label></td>
-				<td><select id="parentCategory" name="parentCategory" th:field="*{parentCategoryId}">
+				<td><select id="parentCategory" name="parentCategory" th:field="*{categoryId}">
 						<option th:each="category : ${categories}" th:value="${category.id}"
 							th:text="${category.name}"></option>
 				</select><span class="error" th:text="${categoryError}"></span></td>
@@ -39,11 +39,11 @@
 				<table>
 				<tr>
 				<td><input type="submit" th:value="#{save}" /></td>
-				<td><div th:if="${formData.categoryId > 0}"> 
+				<td><div th:if="${formData.courseId > 0}"> 
                 <input type="button" th:value="#{delete}"
-                th:data-id="${formData.categoryId}"
-                th:data-action="@{/category/delete/}"
-                th:data-msg="#{confirm.delete_category}" 
+                th:data-id="${formData.courseId}"
+                th:data-action="@{/course/delete/}"
+                th:data-msg="#{confirm.delete_course}" 
                 onclick="return fnConfirmRedirectId(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));" />
                 </div></td>
 				</tr>
@@ -52,6 +52,7 @@
 			</tr>
 		</table>
 		<input type="hidden" th:field="*{categoryId}" name="categoryId" id="categoryId" />
+		<input type="hidden" th:field="*{courseId}" name="courseId" id="courseId" />
 	</form>
 
 	<th:block th:insert="~{pagefragments.html :: footer}">
