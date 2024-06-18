@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<title th:text="${chapter.name}"></title>
+<th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
+</head>
+<body>
+    <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
+    
+    <p>
+    <a th:href="@{/category/}" th:text="#{category.all}">ALL CATEGORIES</a> /
+    <span th:each="cp : ${categoryPath}">
+        <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">CATEGORY NAME</a> /
+    </span>
+    </p>
+    
+    <p><a th:href="@{/course/edit/{id}(id=${course.id})}" th:text="#{course.edit}">EDIT COURSE</a></p>
+    <p><a th:href="@{/unit/edit/{id}(id=${chapter.id})}" th:text="#{chapter.edit}">EDIT CHAPTER</a></p>
+    
+    <b th:text="${course.name}"></b>
+    
+    <h2 th:text="${chapter.name}"></h2>
+
+    <div><th:block th:text="${chapter.description}" /> </div>
+    
+    <p><a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="#{unit.create}"></a></p>
+    
+    <th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
+</body>
+</html>

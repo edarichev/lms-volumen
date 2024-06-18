@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -48,6 +49,7 @@ public class Chapter {
 	 * Sequence number. May be non-unique and negative if needed.
 	 */
 	@NotNull
+	@Column(name = "sequence_number")
 	private Long sequenceNumber = 0L;
 	
 	@NotNull
@@ -60,6 +62,6 @@ public class Chapter {
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "chapter_id")
-	@OrderColumn(name = "sequenceNumber")
+	//@OrderColumn(name = "sequenceNumber")
 	private List<Lecture> lectures = new ArrayList<Lecture>();
 }

@@ -1,5 +1,7 @@
 package volumen.controllers;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import volumen.controllers.forms.AddCourseForm;
 import volumen.data.CourseRepository;
 import volumen.exceptions.CategoryNotFoundException;
 import volumen.exceptions.CourseNotFoundException;
+import volumen.model.Chapter;
 import volumen.model.Course;
 import volumen.model.CourseCategory;
 import volumen.web.ui.CategoryTreeBuilder;
@@ -58,6 +61,10 @@ public class CourseController extends BaseController {
 		model.setViewName(VIEW_SELECTED_COURSE);
 		Course course = selectedCourse.get();
 		model.addObject("course", course);
+		ArrayList<Chapter> chapters = new ArrayList<Chapter>();
+		for (var c : course.getChapters())
+			chapters.add(c);
+		model.addObject("chapters", chapters);
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
@@ -83,11 +90,11 @@ public class CourseController extends BaseController {
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			String requiredError = getMessage("error.course.name_required");
             model.addAttribute("requiredError", requiredError);
+    		model.addAttribute("categories", categories(false, "\u00A0\u00A0"));
+    		model.addAttribute("formData", formData);
+    		model.addAttribute("pageTitle", getMessage("course.page_title_add"));
             return VIEW_COURSE_ADD;
         }
-		model.addAttribute("categories", categories(false, "\u00A0\u00A0"));
-		model.addAttribute("formData", formData);
-		model.addAttribute("pageTitle", getMessage("course.page_title_add"));
 		Course newCourse = formData.toCourse(categoryRepo);
 		courseRepo.save(newCourse);
 		return "redirect:/course/" + newCourse.getId();

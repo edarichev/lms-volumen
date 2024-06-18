@@ -64,7 +64,7 @@ public class Course {
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "course_id")
-	@OrderColumn(name = "sequenceNumber")
+	//@OrderColumn(name = "sequenceNumber")
 	private List<Chapter> chapters = new ArrayList<Chapter>();
 	
 }

@@ -27,8 +27,11 @@
     <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
     
     <!-- courses -->
-    
     <a th:href="@{/course/add/{categoryId}(categoryId=${category.id})}" th:text="#{course.create}">ADD COURSE</a>
+    <h2 th:if="${courses != null}" th:text="#{category.courses_in_this_category}"></h2>
+    
+    <p th:each="c : ${courses}"><a th:href="@{/course/{id}(id=${c.id})}" th:text="${c.name}"></a></p>
+    
     
 	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +34,7 @@ public class Lecture {
 	 * Sequence number.
 	 */
 	@NotNull
+	@Column(name = "sequence_number")
 	private Long sequenceNumber = 0L;
 
 	/**

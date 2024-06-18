@@ -71,6 +71,8 @@ public class CourseCategoryController extends BaseController {
 				e.printStackTrace();
 				model.addObject("categories", new ArrayList<CategoryNode>());
 			}
+			// courses
+			model.addObject("courses", category.get().getCourses());
 			// path
 			model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category.get()));
 		}
