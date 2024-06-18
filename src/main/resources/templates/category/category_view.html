@@ -3,20 +3,27 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8" />
 <title th:text="${category.name}"></title>
-<link rel="stylesheet" th:href="@{/static/css/common.css}" />
+<th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
 </head>
 <body>
     <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
+    
+    <p>
+    <a th:href="@{/category/}" th:text="#{category.all}">ALL CATEGORIES</a> /
+    <span th:each="cp : ${categoryPath}">
+        <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">CATEGORY NAME</a> /
+    </span>
+    </p>
+    
     <h1 th:text="${category.name}"></h1>
 
     <div><th:block th:text="${category.description}" /> </div>
 
     <a th:href="@{/category/add}" th:text="#{category.add}"></a>
-    <div th:each="category : ${categories}">
-         <label th:text="${category.name}">CATEGORY NAME</label><br/>
-     </div>
+    
+    <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
+    
 	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>
 </html>

@@ -12,7 +12,48 @@ import volumen.model.CourseCategory;
 import volumen.model.dto.IdNamePair;
 
 public class CategoryTreeBuilder {
+	
+	/**
+	 * Builds list for page path: "Home >> Cat1 >> Cat2 >> Cat3" etc.
+	 * @param collection
+	 * @param startFrom
+	 * @return
+	 */
+	public static List<IdNamePair<Long>> buildPathToRoot(List<CourseCategory> collection, CourseCategory startFrom) {
+		List<IdNamePair<Long>> path = new ArrayList<>();
+		path.add(new IdNamePair<Long>(startFrom.getId(), startFrom.getName())); // надо или не надо?
+		var parent = startFrom.getParent();
+		if (startFrom == null || parent == null)
+			return path;
+		HashMap<Long, CourseCategory> map = new HashMap<>();
+		for (var item : collection) {
+			map.put(item.getId(), item);
+		}
+		while (parent != null) {
+			path.add(0, new IdNamePair<Long>(parent.getId(), parent.getName()));
+			parent = parent.getParent();
+		}
+		return path;
+	}
 
+	public static CategoryNode buildTree(List<CourseCategory> collection,
+			CourseCategory rootCategory)
+			throws CircularCategoryReferenceException {
+		CategoryNode fullTree = buildTree(collection);
+		return findNode(fullTree, rootCategory);
+	}
+	
+	private static CategoryNode findNode(CategoryNode startTreeNode, CourseCategory what) {
+		if (startTreeNode.getValue() == what)
+			return startTreeNode;
+		for (var item : startTreeNode.getItems()) {
+			var result = findNode(item, what);
+			if (result != null)
+				return result;
+		}
+		return null;
+	}
+	
 	public static CategoryNode buildTree(List<CourseCategory> collection) throws CircularCategoryReferenceException {
 		if (collection == null || collection.isEmpty())
 			return null;

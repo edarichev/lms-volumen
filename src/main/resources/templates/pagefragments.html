@@ -1,8 +1,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="headerfiles">
+<th:block th:fragment="pagehead">
 <meta charset="UTF-8" />
 <link th:href="@{/static/css/common.css}" rel="stylesheet" />
-
+<script type="text/javascript" th:src="@{/static/script/common.js}"></script>
+</th:block>
 </head>
 <body>
 	<th:block th:fragment="header">

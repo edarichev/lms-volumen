@@ -3,10 +3,8 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8" />
 <title th:text="${pageTitle}"></title>
-<link rel="stylesheet" th:href="@{/static/css/common.css}" />
-<script type="text/javascript" th:src="@{/static/script/common.js}"></script>
+<th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
 </head>
 <body>
 	<th:block th:insert="~{pagefragments.html :: header}">

@@ -66,6 +66,19 @@ public class CourseCategoryController {
 		} else {
 			model.setViewName(VIEW_SELECTED_CATEGORY);
 			model.addObject("category", category.get());
+			
+			List<CourseCategory> target = new ArrayList<>();
+			categoryRepo.findAll().forEach(target::add);
+			CategoryNode rootCat;
+			try {
+				rootCat = CategoryTreeBuilder.buildTree(target, category.get());
+				model.addObject("categories", rootCat.getItems());
+			} catch (CircularCategoryReferenceException e) {
+				e.printStackTrace();
+				model.addObject("categories", new ArrayList<CategoryNode>());
+			}
+			// path
+			model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category.get()));
 		}
 		return model;
 	}
