@@ -6,7 +6,12 @@ public class CourseNotFoundException extends IllegalArgumentException {
 
 	private Long id;
 	
+	public CourseNotFoundException() {
+		this(-1L);
+	}
+	
 	public CourseNotFoundException(Long id) {
+		super();
 		this.id = id;
 	}
 	

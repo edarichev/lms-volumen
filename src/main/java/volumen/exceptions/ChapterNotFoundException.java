@@ -7,7 +7,12 @@ public class ChapterNotFoundException  extends IllegalArgumentException {
 	private Long id;
 	
 	public ChapterNotFoundException(Long id) {
+		super();
 		this.id = id;
+	}
+	
+	public ChapterNotFoundException() {
+		this(-1L);
 	}
 	
 	@Override

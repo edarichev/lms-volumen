@@ -3,7 +3,7 @@
     xmlns:th="http://www.thymeleaf.org"
     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<title th:text="${chapter.name}"></title>
+<title th:text="${lecture.name}"></title>
 <th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
 </head>
 <body>
@@ -20,17 +20,18 @@
     <p><a th:href="@{/unit/edit/{id}(id=${chapter.id})}" th:text="#{chapter.edit}">EDIT CHAPTER</a></p>
     <p><a th:href="@{/lecture/add/{id}(id=${chapter.id})}" th:text="#{lecture.add}">ADD LECTURE</a></p>
     
-    <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a>
+    <p><a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>
     <p><a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="#{unit.create}"></a></p>
+    <p><a th:href="@{/lecture/edit/{id}(id=${lecture.id})}" th:text="#{lecture.edit}"></a></p>
     
     
     <h2 th:text="${chapter.name}"></h2>
-
-    <div><th:block th:text="${chapter.description}" /> </div>
     
-    <p th:each="lecture : ${chapter.lectures}">
-        <a th:href="@{/lecture/{id}(id=${lecture.id})}" th:text="${lecture.name}">LECTURE NAME</a> 
-    </p>
+    <h3 th:text="${lecture.name}"></h3>
+
+    <div><th:block th:utext="${lecture.description}" /> </div>
+    
+    <div><th:block th:utext="${lectureContent}" /> </div>
     
     <th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>

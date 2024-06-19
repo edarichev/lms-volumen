@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<title th:text="${pageTitle}"></title>
+<th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
+</head>
+<body>
+	<th:block th:insert="~{pagefragments.html :: header}">
+	</th:block>
+	<h1 th:text="${pageTitle}"></h1>
+	<form method="post" th:object="${formData}" id="add_lecture_form">
+	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
+	   <span class="error" th:if="${#fields.hasErrors('*')}">ERRORS</span>
+		<ul th:if="${#fields.hasErrors('*')}">
+		  <li th:each="error : ${#fields.errors('*')}" th:text="${error}">ERROR</li>
+		</ul>
+		<p><span th:text="#{course}"></span>:
+		<a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>
+		
+		<p><span th:text="#{unit}"></span>:
+        <a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="${chapter.name}"></a></p>
+        
+		<table>
+			<tr>
+				<td><label th:text="#{lecture.name}"></label></td>
+				<td><input type="text" id="lecture_name" name="lecture_name" th:field="*{name}" />
+				<span class="error" th:text="${requiredError}"></span></td>
+			</tr>
+            <tr>
+                <td><label th:text="#{lecture.parent_unit}"></label></td>
+                <td><select id="parentUnit" name="parentUnit" th:field="*{chapterId}">
+                        <option th:each="unit : ${chapters}" th:value="${unit.id}"
+                            th:text="${unit.name}"></option>
+                </select><span class="error" th:text="${categoryError}"></span></td>
+            </tr>
+            <tr>
+                <td><label th:text="#{lecture.sequence_number}"></label></td>
+                <td><input type="text" id="lecture_sequence_number" name="lecture_sequence_number" th:field="*{sequenceNumber}" /></td>
+            </tr>
+            <tr>
+                <td><label th:text="#{lecture.description_optional}" for="lecture_description"></label></td>
+                <td><input type="text" id="lecture_description" name="lecture_description" th:field="*{description}" /></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                <textarea id="lecture_content" name="lecture_content" th:field="*{content}" rows=5 cols=80></textarea>
+                </td>
+            </tr>
+			<tr>
+				<td></td>
+				<td>
+				<table>
+				<tr>
+				<td><input type="submit" th:value="#{save}" /></td>
+				<td><div th:if="${formData.lectureId > 0}"> 
+                <input type="button" th:value="#{delete}"
+                th:data-id="${formData.lectureId}"
+                th:data-action="@{/lecture/delete/}"
+                th:data-msg="#{confirm.delete_lecture}" 
+                onclick="return fnConfirmRedirectId(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));" />
+                </div></td>
+				</tr>
+				</table>
+				</td>
+			</tr>
+		</table>
+		<input type="hidden" th:field="*{chapterId}" name="chapterId" id="chapterId" />
+		<input type="hidden" th:field="*{lectureId}" name="lectureId" id="lectureId" />
+	</form>
+
+	<th:block th:insert="~{pagefragments.html :: footer}">
+	</th:block>
+</body>
+</html>

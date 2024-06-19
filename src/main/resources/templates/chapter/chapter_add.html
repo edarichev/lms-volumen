@@ -10,7 +10,7 @@
 	<th:block th:insert="~{pagefragments.html :: header}">
 	</th:block>
 	<h1 th:text="${pageTitle}"></h1>
-	<form method="post" th:object="${formData}" id="add_course_form">
+	<form method="post" th:object="${formData}" id="add_unit_form">
 	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
 	   <span class="error" th:if="${#fields.hasErrors('*')}">ERRORS</span>
 		<ul th:if="${#fields.hasErrors('*')}">
