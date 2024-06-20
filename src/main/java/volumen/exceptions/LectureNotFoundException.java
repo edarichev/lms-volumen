@@ -8,6 +8,10 @@ public class LectureNotFoundException extends IllegalArgumentException {
 		this.id = id;
 	}
 	
+	public LectureNotFoundException() {
+		this(-1L);
+	}
+
 	@Override
 	public String getMessage() {
 		return "Lecture not found: " + this.id;

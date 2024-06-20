@@ -24,6 +24,13 @@
     <p><a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="#{unit.create}"></a></p>
     <p><a th:href="@{/lecture/edit/{id}(id=${lecture.id})}" th:text="#{lecture.edit}"></a></p>
     
+    <th:block th:if="${lecture.lectureTest == null}">
+        <p><a th:href="@{/test/add/{id}(id=${lecture.id})}" th:text="#{lecture.add_test}">ADD TEST</a></p>
+    </th:block>
+    <th:block th:if="${lecture.lectureTest != null}">
+    
+        <p><a th:href="@{/test/edit/{id}(id=${lecture.lectureTest.id})}" th:text="#{lecture.edit_test}">EDIT TEST</a></p>
+    </th:block>
     
     <h2 th:text="${chapter.name}"></h2>
     

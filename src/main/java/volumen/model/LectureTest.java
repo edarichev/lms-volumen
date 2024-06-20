@@ -3,6 +3,7 @@ package volumen.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -33,6 +34,9 @@ public class LectureTest {
 	@NotNull
 	@OneToOne
 	private Lecture lecture;
+
+	@Formula("(SELECT COUNT(*) FROM test_question t WHERE t.lecture_test_id = id)")
+    private int questionCount;	
 
 	@JoinColumn(name = "lecture_test_id")
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
