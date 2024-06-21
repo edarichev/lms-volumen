@@ -57,6 +57,8 @@
 		</table>
 		<input type="hidden" th:field="*{testId}" name="testId" id="testId" />
 		<input type="hidden" th:field="*{lectureId}" name="lectureId" id="lectureId" />
+		
+		<a th:href="@{/question/add/{testId}(testId=*{testId})}" th:text="#{test.add_question}">ADD QUESTION</a>
 	</form>
 
 	<th:block th:insert="~{pagefragments.html :: footer}">

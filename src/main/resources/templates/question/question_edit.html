@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!-- Edit/Add question -->
+<head>
+<title th:text="#{question.edit_page_title}"></title>
+<th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
+<script type="text/javascript" th:src="@{/static/script/answersbuilder.js}"></script>
+<link th:href="@{/static/css/answersbuilder.css}" rel="stylesheet" /> 
+</head>
+<body>
+	<th:block th:insert="~{pagefragments.html :: header}">
+	</th:block>
+	<h1 th:text="#{test.edit_page_title}"></h1>
+	<form method="post" th:object="${formData}" id="add_lecture_form">
+	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
+	   
+		<p><span th:text="#{course}"></span>:
+		<a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>
+		
+		<p><span th:text="#{unit}"></span>:
+        <a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="${chapter.name}"></a></p>
+        
+        <p><span th:text="#{lecture}"></span>:
+        <a th:href="@{/lecture/{id}(id=${lecture.id})}" th:text="${lecture.name}"></a></p>
+        
+        <p><a th:href="@{/test/edit/{id}(id=${testId})}" th:text="#{lecture.edit_test}">EDIT TEST</a></p>
+        
+		<table>
+			<tr>
+				<td><label th:text="#{question.text_of_question}"></label></td>
+				<td>
+				<textarea id="text_of_question" name="text_of_question" th:field="*{question.text}"></textarea>
+				</td>
+			</tr>
+			<tr>
+			     <td><label th:text="#{question.question_type}"></label></td>
+			     <td>
+			     <select id="question_type" th:field="*{question.questionType}">
+			     <option th:each="qt : *{questionTypes}" th:value="${qt.id}" th:text="${qt.name}">QUESTION TYPE</option>
+			     </select>
+			     </td>
+			</tr>
+			<tr>
+			<td colspan="2">
+			
+			</td>
+			</tr>
+ 			<tr>
+				<td></td>
+				<td>
+				<table>
+				<tr>
+				<!-- save through REST service -->
+				<td><input type="button" th:value="#{save}" onclick="saveDTO();" />
+				    
+				</td>
+				<td><div th:if="${formData.questionId > 0}"> 
+                <input type="button" th:value="#{delete}"
+                th:data-id="${formData.testId}"
+                th:data-action="@{/question/delete/}"
+                th:data-msg="#{confirm.delete_question}" 
+                onclick="return fnConfirmRedirectId(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));" />
+                </div></td>
+				</tr>
+				
+				</table>
+				</td>
+			</tr>
+			<tr>
+                <td colspan="2" align="center">
+                    <p id="http_error_message" class="error"></p>
+                    <p id="status_message" class="status-message"></p>
+                </td>
+            </tr>
+		</table>
+		<input type="hidden" th:field="${questionId}" name="questionId" id="questionId" />
+		<input type="hidden" th:field="${testId}" name="testId" id="testId" />
+		<input type="hidden" th:field="${lectureId}" name="lectureId" id="lectureId" />
+		
+		<div id="answers_builder">
+		</div>
+
+		
+		<p>
+		<a th:href="@{/question/add/{testId}(testId=*{testId})}" th:text="#{test.add_another_question}">ADD QUESTION</a>
+		</p>
+	</form>
+<div id="out">
+</div>
+
+<input type="button" value="Serialize" onclick="document.getElementById('out').innerText = JSON.stringify(makeDTO());" />
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    apiUrl = /*[[@{/questionservice/save}]]*/"";
+   /*]]>*/
+</script>
+
+<script type="text/javascript">
+var builder = new AnswersBuilder("answers_builder", 
+        {'orderNumberFieldCSSClass' : "answer-order-number-field",
+        'answerTextFieldCSSClass' : "answer-text-field",
+        'trueFalseCheckBoxCSSClass' : "true-false-checkbox",
+        'tableCSSClass' : "ansers-builder-table"
+        }
+        );
+builder.addAnswer(11, 6, "The answer", true);
+
+function makeDTO() {
+	var questionId = Number.parseInt(document.getElementById('questionId').value);
+	if (isNaN(questionId) || questionId < 0)
+		questionId = -1;
+	var questionText = document.getElementById('text_of_question').value;
+	var sel = document.getElementById('question_type');
+	var questionType = sel.options[sel.selectedIndex].value;
+	return builder.serialize(questionId, questionText, questionType);
+}
+
+function showError(msg) {
+	var errObject = document.getElementById('http_error_message');
+	errObject.innerText = msg;
+	errObject.style.display = 'block';
+    setTimeout(function() {document.getElementById('http_error_message').style.display='none';}, 5000);
+}
+
+function showMessage(msg) {
+    var errObject = document.getElementById('status_message');
+    errObject.innerText = msg;
+    errObject.style.display = 'block';
+    setTimeout(function() {document.getElementById('status_message').style.display='none';}, 5000);
+}
+
+function saveDTO() {
+	var xhr = new XMLHttpRequest();
+	xhr.open('POST', apiUrl);
+	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	xhr.send(JSON.stringify(makeDTO()));
+	xhr.onload = function() {
+		if (!(xhr.status >= 200 && xhr.status < 300)) { // OK 200 or 201 CREATED
+		    showError("Error " + xhr.status + ": " + xhr.statusText);
+		} else {
+			showMessage('Saved');
+		}
+	};
+	xhr.onerror = function() {
+	    showError('Connection error');
+	};
+}
+</script>
+	<th:block th:insert="~{pagefragments.html :: footer}">
+	</th:block>
+</body>
+</html>

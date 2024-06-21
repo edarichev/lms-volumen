@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+.answers-builder {
+    width:600px;
+}
+
+.ansers-builder-table {
+    width:100%;
+    border: 1px dashed darkgray;
+    border-collapse: collapse;
+}
+
+.ansers-builder-table th {
+    border: 1px dashed darkgray;
+    border-collapse: collapse;
+    padding:5px;
+}
+
+.ansers-builder-table td {
+    border: 1px dashed darkgray;
+    border-collapse: collapse;
+    padding:5px;
+}
+
+.answer-order-number-field {
+    width:40px;
+}
+
+.answer-text-field {
+    width:100%;
+}
+
+.true-false-checkbox {
+    width:100%;
+    height:100%;
+}
+
+</style>
+
+<script type="text/javascript" src="../../src/main/resources/static/script/answersbuilder.js">
+</script>
+</head>
+<body>
+<div id="answers_builder" class="answers-builder">
+<!-- design:
+<table id="answers_builder_table1" class="ansers-builder-table">
+<thead>
+    <tr>
+        <th>№</th>
+        <th style="width:90%;">Текст ответа</th>
+        <th style="white-space:nowrap;">Ответ верный?</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+    <tr>
+    <td colspan="4" style="text-align:center;">
+    <input type="button" value="Добавить вариант ответа" onclick="builder.addAnswer();" />
+    </td>
+    </tr>
+    </tfoot>
+</table>
+ -->
+<div id="out">
+</div>
+<input type="button" value="Serialize" onclick="document.getElementById('out').innerText = builder.serialize();" />
+</div>
+<script type="text/javascript">
+var builder = new AnswersBuilder("answers_builder", 
+	    {//'orderNumberFieldCSSClass' : "answer-order-number-field",
+	    //'answerTextFieldCSSClass' : "answer-text-field",
+	    'trueFalseCheckBoxCSSClass' : "true-false-checkbox",
+	    'tableCSSClass' : "ansers-builder-table"
+	    }
+	    );
+builder.addAnswer(6, "The answer", true);
+</script>
+</body>
+</html>

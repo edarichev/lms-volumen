@@ -161,27 +161,6 @@ public class TestController extends BaseController {
 		return "redirect:/lecture/" + lecture.getId();
 	}
 
-	protected Course getCourse(Chapter chapter) {
-		Course course = chapter.getCourse();
-		if (course == null)
-			throw new CourseNotFoundException();
-		return course;
-	}
-
-	protected Chapter getChapter(Lecture lecture) {
-		Chapter chapter = lecture.getChapter();
-		if (chapter == null)
-			throw new ChapterNotFoundException();
-		return chapter;
-	}
-
-	protected Lecture getLecture(LectureTest test) {
-		Lecture lecture = test.getLecture();
-		if (lecture == null)
-			throw new LectureNotFoundException();
-		return lecture;
-	}
-
 	protected LectureTest findTest(Long id) {
 		LectureTest test = testRepo.findById(id).orElseThrow(() -> new TestNotFoundException(id));
 		return test;

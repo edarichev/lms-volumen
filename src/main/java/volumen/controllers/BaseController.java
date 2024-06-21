@@ -7,8 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
 import volumen.data.CourseCategoryRepository;
+import volumen.exceptions.ChapterNotFoundException;
 import volumen.exceptions.CircularCategoryReferenceException;
+import volumen.exceptions.CourseNotFoundException;
+import volumen.exceptions.LectureNotFoundException;
+import volumen.model.Chapter;
+import volumen.model.Course;
 import volumen.model.CourseCategory;
+import volumen.model.Lecture;
+import volumen.model.LectureTest;
 import volumen.model.dto.IdNamePair;
 import volumen.web.ui.CategoryTreeBuilder;
 
@@ -44,5 +51,26 @@ public class BaseController {
 	
 	protected String getMessage(String key) {
 		return messageSource.getMessage(key, null, null);
+	}
+	
+	protected Course getCourse(Chapter chapter) {
+		Course course = chapter.getCourse();
+		if (course == null)
+			throw new CourseNotFoundException();
+		return course;
+	}
+
+	protected Chapter getChapter(Lecture lecture) {
+		Chapter chapter = lecture.getChapter();
+		if (chapter == null)
+			throw new ChapterNotFoundException();
+		return chapter;
+	}
+
+	protected Lecture getLecture(LectureTest test) {
+		Lecture lecture = test.getLecture();
+		if (lecture == null)
+			throw new LectureNotFoundException();
+		return lecture;
 	}
 }

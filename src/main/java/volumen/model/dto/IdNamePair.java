@@ -1,6 +1,9 @@
 package volumen.model.dto;
 
-public class IdNamePair<TId> {
+import java.io.Serializable;
+
+public class IdNamePair<TId> implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private TId id;
 	private String name;
 	
