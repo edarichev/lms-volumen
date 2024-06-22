@@ -53,12 +53,14 @@ public class TestQuestion {
 	@NotNull
 	private Long score = 1L;
 	
+	@NotNull
+	private boolean shuffleAnswers = false;
+	
 	/**
-	 * Answers: can not be null or empty
+	 * Answers
 	 */
-	//@Size(min = 1)
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "test_question_id")
+	@OneToMany(fetch = FetchType.LAZY,  cascade = CascadeType.ALL)
+	@JoinColumn(name = "test_question_id", updatable = false)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private List<Answer> answers = new ArrayList<Answer>();
 }

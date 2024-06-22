@@ -11,11 +11,13 @@ import volumen.exceptions.ChapterNotFoundException;
 import volumen.exceptions.CircularCategoryReferenceException;
 import volumen.exceptions.CourseNotFoundException;
 import volumen.exceptions.LectureNotFoundException;
+import volumen.exceptions.TestNotFoundException;
 import volumen.model.Chapter;
 import volumen.model.Course;
 import volumen.model.CourseCategory;
 import volumen.model.Lecture;
 import volumen.model.LectureTest;
+import volumen.model.TestQuestion;
 import volumen.model.dto.IdNamePair;
 import volumen.web.ui.CategoryTreeBuilder;
 
@@ -72,5 +74,12 @@ public class BaseController {
 		if (lecture == null)
 			throw new LectureNotFoundException();
 		return lecture;
+	}
+	
+	protected LectureTest getLectureTest(TestQuestion question) {
+		LectureTest test = question.getLectureTest();
+		if (test == null)
+			throw new TestNotFoundException();
+		return test;
 	}
 }

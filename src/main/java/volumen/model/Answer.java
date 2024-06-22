@@ -36,4 +36,6 @@ public class Answer {
 	 * True if this variant is valid. Required.
 	 */
 	private boolean isValid = false;
+	
+	private Long sequenceNumber;
 }

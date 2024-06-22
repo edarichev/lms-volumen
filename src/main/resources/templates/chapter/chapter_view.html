@@ -15,18 +15,31 @@
         <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">CATEGORY NAME</a> /
     </span>
     </p>
-    
+
+    <h1><a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a> </h1>
+
+<table>
+<tr>
+    <td>
     <p><a th:href="@{/course/edit/{id}(id=${course.id})}" th:text="#{course.edit}">EDIT COURSE</a></p>
-    <p><a th:href="@{/unit/edit/{id}(id=${chapter.id})}" th:text="#{chapter.edit}">EDIT CHAPTER</a></p>
-    <p><a th:href="@{/lecture/add/{id}(id=${chapter.id})}" th:text="#{lecture.add}">ADD LECTURE</a></p>
-    
-    <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a>
+    </td>
+    <td>
     <p><a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="#{unit.create}"></a></p>
+    </td>
+    <td>
+    <p><a th:href="@{/unit/edit/{id}(id=${chapter.id})}" th:text="#{chapter.edit}">EDIT CHAPTER</a></p>
+    </td>
+    <td>
+    <p><a th:href="@{/lecture/add/{id}(id=${chapter.id})}" th:text="#{lecture.add}">ADD LECTURE</a></p>
+    </td>
+</tr>
+</table>    
+    
     
     
     <h2 th:text="${chapter.name}"></h2>
 
-    <div><th:block th:text="${chapter.description}" /> </div>
+    <div><th:block th:utext="${chapter.description}" /> </div>
     
     <p th:each="lecture : ${chapter.lectures}">
         <a th:href="@{/lecture/{id}(id=${lecture.id})}" th:text="${lecture.name}">LECTURE NAME</a> 

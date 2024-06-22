@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TestQuestionDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private Long testId = -1L;
 	private Long id = -1L;
 	private String text;
 	private String questionType;

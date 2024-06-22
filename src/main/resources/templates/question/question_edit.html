@@ -12,7 +12,7 @@
 <body>
 	<th:block th:insert="~{pagefragments.html :: header}">
 	</th:block>
-	<h1 th:text="#{test.edit_page_title}"></h1>
+	<h1 th:text="#{question.edit_page_title}"></h1>
 	<form method="post" th:object="${formData}" id="add_lecture_form">
 	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
 	   
@@ -56,10 +56,10 @@
 				<td><input type="button" th:value="#{save}" onclick="saveDTO();" />
 				    
 				</td>
-				<td><div th:if="${formData.questionId > 0}"> 
+				<td><div th:if="${questionId > 0}"> 
                 <input type="button" th:value="#{delete}"
-                th:data-id="${formData.testId}"
-                th:data-action="@{/question/delete/}"
+                th:data-id="${questionId}"
+                th:data-action="@{/questionservice/delete/}"
                 th:data-msg="#{confirm.delete_question}" 
                 onclick="return fnConfirmRedirectId(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));" />
                 </div></td>
@@ -69,15 +69,16 @@
 				</td>
 			</tr>
 			<tr>
-                <td colspan="2" align="center">
+			    <td>&nbsp;</td>
+                <td>
                     <p id="http_error_message" class="error"></p>
                     <p id="status_message" class="status-message"></p>
                 </td>
             </tr>
 		</table>
-		<input type="hidden" th:field="${questionId}" name="questionId" id="questionId" />
-		<input type="hidden" th:field="${testId}" name="testId" id="testId" />
-		<input type="hidden" th:field="${lectureId}" name="lectureId" id="lectureId" />
+		<input type="hidden" th:value="${questionId}" name="questionId" id="questionId" />
+		<input type="hidden" th:value="${testId}" name="testId" id="testId" />
+		<input type="hidden" th:value="${lectureId}" name="lectureId" id="lectureId" />
 		
 		<div id="answers_builder">
 		</div>
@@ -86,15 +87,16 @@
 		<p>
 		<a th:href="@{/question/add/{testId}(testId=*{testId})}" th:text="#{test.add_another_question}">ADD QUESTION</a>
 		</p>
-	</form>
 <div id="out">
 </div>
-
+<!-- 
 <input type="button" value="Serialize" onclick="document.getElementById('out').innerText = JSON.stringify(makeDTO());" />
-
+ -->
+ 
 <script th:inline="javascript">
     /*<![CDATA[*/
-    apiUrl = /*[[@{/questionservice/save}]]*/"";
+    var apiUrl = /*[[@{/questionservice/save}]]*/"";
+    var savedMessage = /*[[#{message.saved}]]*/"Saved";
    /*]]>*/
 </script>
 
@@ -106,18 +108,16 @@ var builder = new AnswersBuilder("answers_builder",
         'tableCSSClass' : "ansers-builder-table"
         }
         );
-builder.addAnswer(11, 6, "The answer", true);
+</script>
 
-function makeDTO() {
-	var questionId = Number.parseInt(document.getElementById('questionId').value);
-	if (isNaN(questionId) || questionId < 0)
-		questionId = -1;
-	var questionText = document.getElementById('text_of_question').value;
-	var sel = document.getElementById('question_type');
-	var questionType = sel.options[sel.selectedIndex].value;
-	return builder.serialize(questionId, questionText, questionType);
-}
-
+<th:block th:each="a : *{question.answers}">
+<script th:inline="javascript">
+/*<![CDATA[*/
+builder.addAnswer(/*[[${a.id}]]*/-1, /*[[${a.sequenceNumber}]]*/-1, /*[[${a.answer}]]*/"", /*[[${a.valid}]]*/false);
+/*]]>*/
+</script>
+</th:block>
+<script type="text/javascript">
 function showError(msg) {
 	var errObject = document.getElementById('http_error_message');
 	errObject.innerText = msg;
@@ -132,6 +132,28 @@ function showMessage(msg) {
     setTimeout(function() {document.getElementById('status_message').style.display='none';}, 5000);
 }
 
+function loadFromDTO(str) {
+	var question = JSON.parse(str);
+	document.getElementById('questionId').value = question.id;
+	document.getElementById('testId').value = question.testId;
+	document.getElementById('text_of_question').value = question.text;
+	document.getElementById('question_type').value = question.questionType;
+	builder.deserialize(question);
+}
+
+function makeDTO() {
+    var questionId = Number.parseInt(document.getElementById('questionId').value);
+    if (isNaN(questionId) || questionId < 0)
+        questionId = -1;
+    var testId = Number.parseInt(document.getElementById('testId').value);
+    if (isNaN(testId) || testId < 0)
+    	testId = -1;
+    var questionText = document.getElementById('text_of_question').value;
+    var sel = document.getElementById('question_type');
+    var questionType = sel.options[sel.selectedIndex].value;
+    return builder.serialize(testId, questionId, questionText, questionType);
+}
+
 function saveDTO() {
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', apiUrl);
@@ -139,9 +161,10 @@ function saveDTO() {
 	xhr.send(JSON.stringify(makeDTO()));
 	xhr.onload = function() {
 		if (!(xhr.status >= 200 && xhr.status < 300)) { // OK 200 or 201 CREATED
-		    showError("Error " + xhr.status + ": " + xhr.statusText);
+		    showError("Error " + xhr.status + " " + xhr.statusText);
 		} else {
-			showMessage('Saved');
+			showMessage(savedMessage);
+			loadFromDTO(xhr.responseText);
 		}
 	};
 	xhr.onerror = function() {
@@ -149,6 +172,8 @@ function saveDTO() {
 	};
 }
 </script>
+    </form>
+
 	<th:block th:insert="~{pagefragments.html :: footer}">
 	</th:block>
 </body>

@@ -8,6 +8,10 @@ public class TestNotFoundException extends IllegalArgumentException {
 		this.id = id;
 	}
 	
+	public TestNotFoundException() {
+		this(-1L);
+	}
+	
 	@Override
 	public String getMessage() {
 		return "Test not found: " + this.id;

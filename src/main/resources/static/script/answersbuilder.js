@@ -10,7 +10,7 @@
         'tableCSSClass' : "ansers-builder-table"
         }
         );
-    builder.addAnswer(6, "The answer", true);
+    builder.addAnswer(111, 6, "The answer", true);
  */
 class AnswersBuilder {
     constructor(containerId, parameters) {
@@ -152,8 +152,9 @@ class AnswersBuilder {
             return arr;
         };
         
-        this.serialize = function(questionId, questionText, questionType) {
+        this.serialize = function(testId, questionId, questionText, questionType) {
             var questionDTO = {
+                'testId' : testId,
                 'id' : questionId,
                 'text' : questionText,
                 'questionType' : questionType,
@@ -161,6 +162,21 @@ class AnswersBuilder {
             };
             return questionDTO;
         }
+        
+        /**
+         * Deserialize answers and put they into table
+         * 
+         * @param question a QuestionDTO object
+         */
+        this.deserialize = function(question) {
+            var tbodyRef = document.getElementById(this.tableName).getElementsByTagName('tbody')[0];
+            tbodyRef.innerHTML = "";
+            for (var i = 0; i < question.answers.length; ++i) {
+                var a = question.answers[i];
+                this.addAnswer(a.id, a.sequenceNumber, a.answer, a.valid);
+            }
+        }
+        
 
         // create content
         var table = document.createElement('table');

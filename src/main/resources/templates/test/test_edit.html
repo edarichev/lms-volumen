@@ -9,13 +9,15 @@
 <body>
 	<th:block th:insert="~{pagefragments.html :: header}">
 	</th:block>
+    <p>
+    <a th:href="@{/category/}" th:text="#{category.all}">ALL CATEGORIES</a> /
+    <span th:each="cp : ${categoryPath}">
+        <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">CATEGORY NAME</a> /
+    </span>
+    </p>
 	<h1 th:text="#{test.edit_page_title}"></h1>
 	<form method="post" th:object="${formData}" id="add_lecture_form">
-	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
-	   <span class="error" th:if="${#fields.hasErrors('*')}">ERRORS</span>
-		<ul th:if="${#fields.hasErrors('*')}">
-		  <li th:each="error : ${#fields.errors('*')}" th:text="${error}">ERROR</li>
-		</ul>
+
 		<p><span th:text="#{course}"></span>:
 		<a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>
 		
@@ -59,6 +61,28 @@
 		<input type="hidden" th:field="*{lectureId}" name="lectureId" id="lectureId" />
 		
 		<a th:href="@{/question/add/{testId}(testId=*{testId})}" th:text="#{test.add_question}">ADD QUESTION</a>
+		
+		<!-- questions -->
+		<th:block th:if="${questions != null && questions.size() > 0}">
+		<h3 th:text="#{test.questions_of_this_test}"></h3>
+		<table width="100%" style="padding:0px">
+		  <tr th:each="q : ${questions}">
+		  <td style="border-top:1px darkgray dashed;width:95%;">
+		  <p><b th:text="${q.text}"></b></p>
+		  </td>
+		  <td style="text-align:center;vertical-align:middle;border-top:1px darkgray dashed;">
+		  <a th:href="@{/question/edit/{id}(id=${q.id})}" th:text="#{edit}">EDIT</a>
+		  </td>
+		  <td style="text-align:center;vertical-align:middle;border-top:1px darkgray dashed;">
+		  <a href="javascript:void(0);" th:text="#{delete}"
+		  th:data-id="${q.id}"
+                th:data-action="@{/questionservice/delete/}"
+                th:data-msg="#{confirm.delete_question}" 
+                onclick="return fnConfirmRedirectId(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));">DELETE</a>
+          </td>
+		  </tr>
+		</table>
+        </th:block>
 	</form>
 
 	<th:block th:insert="~{pagefragments.html :: footer}">

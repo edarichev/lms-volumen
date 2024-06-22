@@ -1,5 +1,8 @@
 package volumen.controllers;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +26,8 @@ import volumen.model.Course;
 import volumen.model.CourseCategory;
 import volumen.model.Lecture;
 import volumen.model.LectureTest;
+import volumen.model.TestQuestion;
+import volumen.model.dto.TestQuestionDTO;
 import volumen.web.ui.CategoryTreeBuilder;
 
 /**
@@ -104,6 +109,7 @@ public class TestController extends BaseController {
 		model.addObject("lecture", lecture);
 		model.addObject("chapter", chapter);
 		model.addObject("course", course);
+		model.addObject("questions", getTestQuestions(test));
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		// questions
@@ -164,5 +170,10 @@ public class TestController extends BaseController {
 	protected LectureTest findTest(Long id) {
 		LectureTest test = testRepo.findById(id).orElseThrow(() -> new TestNotFoundException(id));
 		return test;
+	}
+	
+	protected ArrayList<TestQuestion> getTestQuestions(LectureTest test) {
+		ArrayList<TestQuestion> list = test.getQuestions().stream().collect(Collectors.toCollection(ArrayList::new));
+		return list;
 	}
 }

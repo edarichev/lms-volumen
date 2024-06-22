@@ -15,19 +15,37 @@
         <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">COURSE NAME</a> /
     </span>
     </p>
-    
+<table>
+<tr>
+    <td>
     <p><a th:href="@{/course/edit/{id}(id=${course.id})}" th:text="#{course.edit}">EDIT COURSE</a></p>
+    </td>
+    <td>
+    <p>
+    <a th:href="@{/unit/add/{courseId}(courseId=${course.id})}" th:text="#{unit.create}"></a>
+    </p>
+    </td>
+</tr>
+</table>
     
     <h1 th:text="${course.name}"></h1>
 
-    <div><th:block th:text="${course.description}" /> </div>
+    <div><th:block th:utext="${course.description}" /> </div>
     
-    <a th:href="@{/unit/add/{courseId}(courseId=${course.id})}" th:text="#{unit.create}"></a>
-    
-    <p th:each="unit : ${chapters}">
-    <a th:href="@{/unit/{id}(id=${unit.id})}" th:text="${unit.name}"></a>
-    </p>
-
+    <th:block th:each="unit : ${chapters}">
+	    <h2>
+	        <a th:href="@{/unit/{id}(id=${unit.id})}" th:text="${unit.name}">UNIT</a>
+	    </h2>
+	    <p th:if="unit.description != null" th:utext="${unit.description}"></p>
+	    <ul>
+	    <th:block th:each="lec : ${unit.lectures}">
+	        <h3>
+	            <a th:href="@{/lecture/{id}(id=${lec.id})}" th:text="${lec.name}">LECTURE</a>
+	        </h3>
+	        <p th:utext="${lec.description}"></p>
+	    </th:block>
+	    </ul>
+    </th:block>
 	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>
 </html>
