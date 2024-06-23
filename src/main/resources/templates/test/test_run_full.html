@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<title th:text="${pageTitle}"></title>
+<th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
+<script type="text/javascript">
+
+function collectResults() {
+	
+}
+
+function sendResults() {
+	
+}
+
+</script>
+</head>
+<body>
+    <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
+    <p>
+    <a th:href="@{/category/}" th:text="#{category.all}">ALL CATEGORIES</a> /
+    <span th:each="cp : ${categoryPath}">
+        <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">CATEGORY NAME</a> /
+    </span>
+    </p>
+    <form id="run_test_form" method="post" th:object="${formData}">
+    <h1><a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></h1>
+    
+    <h2 th:text="${chapter.name}"></h2>
+    
+    <h3 th:text="${pageTitle}"></h3>
+
+	<table class="run-test-container">
+		<tr>
+			<td>
+				<!-- after GET only -->
+			    <div th:if="${isPostBack} == false" style="display:block;" id="dto_container">
+			    <th:block th:each="q : ${exam.questions}">
+				    <div th:id="'dto_question_' + ${q.id}">
+				    <table style="width:100%; border-bottom: 1px dotted black;">
+				      <tr> <!-- question text -->
+				          <td>
+		                    <th:block th:utext="${q.text}" />
+				          </td>
+				      </tr>
+		              <tr> <!-- answers -->
+		                  <td>
+		                  <th:block th:if="${q.questionType} == 'MULTIPLE'" >
+		                    <p th:each="a : ${q.answers}">
+		                        <input type="checkbox" th:id="'answer_' + ${a.id}" th:name="'answer_' + ${a.id}" />
+		                        <label th:for="'answer_' + ${a.id}" th:utext="${a.answer}"></label>
+		                    </p>
+		                  </th:block>
+		                  <th:block th:if="${q.questionType} == 'SINGLE'" >
+		                    <p th:each="a : ${q.answers}">
+		                        <input type="radio" th:id="'answer_' + ${a.id}" th:value="${a.id}"
+		                            th:name="'dto_question_single_' + ${q.id}" />
+		                        <label th:for="'answer_' + ${a.id}" th:utext="${a.answer}"></label>
+		                    </p>
+		                  </th:block>
+		                  <th:block th:if="${q.questionType} == 'TEXT'" >
+		                    <input type="text" th:name="'dto_question_text_answer_' + ${q.id}" th:id="'dto_question_text_answer_' + ${q.id}" />
+		                  </th:block>
+		                  </td>
+		              </tr>
+				    </table>
+				    </div>
+				</th:block>
+				</div>
+				
+				<!-- after POST only -->
+                <div th:if="${isPostBack} == true" style="display:block;" id="dto_results_container">
+                <table border="1" style="border-collapse:collapse;width:100%;">
+                <tr th:each="q : ${result.questions}">
+                    <td>
+                    <th:block th:utext="${q.text}" />
+                    </td>
+                    
+                    <td th:if="${q.valid} == true" class="true-answer-cell" th:text="#{test.result.true}">
+                    </td>
+                    <td th:if="${q.valid} == false" class="false-answer-cell" th:text="#{test.result.false}">
+                    </td>
+                </tr>
+                </table>
+                </div>
+		    </td>
+		</tr>
+		<tr th:if="${isPostBack} == false">
+			<td>
+				<table style="width:100%;background-color:#F0F0F0">
+				<tr>
+					<td style="width:95%" id="question_container">
+					</td>
+					<td align="right">
+	                <input type="submit" value="Завершить тест" />
+	                </td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+    <input type="hidden" id="courseId" th:field="*{courseId}" />
+    <input type="hidden" id="chapterId" th:field="*{chapterId}" />
+    <input type="hidden" id="lectureId" th:field="*{lectureId}" />
+    <input type="hidden" id="testId" th:field="*{testId}" />
+    </form>
+	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
+</body>
+</html>

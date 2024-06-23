@@ -35,9 +35,6 @@ public class LectureController extends BaseController {
 	private static final String VIEW_EDIT_LECTURE = "lecture/lecture_add";
 
 	@Autowired
-	private CourseRepository courseRepo;
-
-	@Autowired
 	ChaptersRepository chapterRepo;
 	
 	@Autowired
@@ -127,7 +124,7 @@ public class LectureController extends BaseController {
 		formData.setDescription(lecture.getDescription());
 		formData.setSequenceNumber(lecture.getSequenceNumber());
 		formData.setContent(lectureRepo.getLectureContent(id));
-		model.addObject("pageTitle", getMessage("unit.page_title_edit"));
+		model.addObject("pageTitle", getMessage("lecture.page_title_edit"));
 		model.addObject("formData", formData);
 		model.addObject("chapter", chapter);
 		model.addObject("chapters", course.getChapters());

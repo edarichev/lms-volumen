@@ -8,8 +8,7 @@
 </head>
 <body>
     <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
-    <h1 th:text="#{greeting}"></h1>
-    <p><a th:href="@{/category}">Categories</a></p>
+    <p><a th:href="@{/category}" th:text="#{header.categories_of_courses}">Categories</a></p>
      <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
      
 	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>

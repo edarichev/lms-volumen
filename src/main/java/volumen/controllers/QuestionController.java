@@ -55,9 +55,9 @@ public class QuestionController extends BaseController {
 	@GetMapping("/add/{testId}")
 	ModelAndView getAdd(@PathVariable("testId") Long testId) {
 		LectureTest test = findTest(testId);
-		Lecture lecture = getLecture(test);
-		Chapter chapter = getChapter(lecture);
-		Course course = getCourse(chapter);
+		Lecture lecture = getLectureOrThrow(test);
+		Chapter chapter = getChapterOrThrow(lecture);
+		Course course = getCourseOrThrow(chapter);
 		ModelAndView model = new ModelAndView(VIEW_QUESTION_ADD);
 		EditQuestionForm formData = new EditQuestionForm();
 		formData.setQuestionTypes(buildQuestionTypes());
@@ -80,11 +80,11 @@ public class QuestionController extends BaseController {
 	@GetMapping("/edit/{id}")
 	ModelAndView getEdit(@PathVariable("id") Long id) {
 		TestQuestion question = findQuestion(id);
-		LectureTest test = getLectureTest(question);
+		LectureTest test = getLectureTestOrThrow(question);
 		Long testId = test.getId();
-		Lecture lecture = getLecture(test);
-		Chapter chapter = getChapter(lecture);
-		Course course = getCourse(chapter);
+		Lecture lecture = getLectureOrThrow(test);
+		Chapter chapter = getChapterOrThrow(lecture);
+		Course course = getCourseOrThrow(chapter);
 		ModelAndView model = new ModelAndView(VIEW_EDIT_QUESTION);
 		EditQuestionForm formData = new EditQuestionForm();
 		formData.setQuestionTypes(buildQuestionTypes());

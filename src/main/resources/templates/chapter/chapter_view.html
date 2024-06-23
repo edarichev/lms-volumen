@@ -22,14 +22,8 @@
 <tr>
     <td>
     <p><a th:href="@{/course/edit/{id}(id=${course.id})}" th:text="#{course.edit}">EDIT COURSE</a></p>
-    </td>
-    <td>
     <p><a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="#{unit.create}"></a></p>
-    </td>
-    <td>
     <p><a th:href="@{/unit/edit/{id}(id=${chapter.id})}" th:text="#{chapter.edit}">EDIT CHAPTER</a></p>
-    </td>
-    <td>
     <p><a th:href="@{/lecture/add/{id}(id=${chapter.id})}" th:text="#{lecture.add}">ADD LECTURE</a></p>
     </td>
 </tr>

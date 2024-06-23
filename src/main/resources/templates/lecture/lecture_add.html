@@ -22,6 +22,11 @@
 		<p><span th:text="#{unit}"></span>:
         <a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="${chapter.name}"></a></p>
         
+        <p th:if="${formData.lectureId != null}">
+        <span th:text="#{lecture}"></span>:
+        <a th:href="@{/lecture/{id}(id=${formData.lectureId})}" th:text="${formData.name}">LECTURE NAME</a>
+        </p>
+        
 		<table>
 			<tr>
 				<td><label th:text="#{lecture.name}"></label></td>

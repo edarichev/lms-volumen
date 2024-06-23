@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
 import volumen.data.CourseCategoryRepository;
+import volumen.exceptions.CategoryNotFoundException;
 import volumen.exceptions.ChapterNotFoundException;
 import volumen.exceptions.CircularCategoryReferenceException;
 import volumen.exceptions.CourseNotFoundException;
@@ -55,29 +56,43 @@ public class BaseController {
 		return messageSource.getMessage(key, null, null);
 	}
 	
-	protected Course getCourse(Chapter chapter) {
+	protected Course getCourseOrThrow(Chapter chapter) {
 		Course course = chapter.getCourse();
 		if (course == null)
 			throw new CourseNotFoundException();
 		return course;
 	}
 
-	protected Chapter getChapter(Lecture lecture) {
+	protected CourseCategory getCategoryOrThrow(Course course) {
+		var category = course.getCategory();
+		if (category == null)
+			throw new CategoryNotFoundException();
+		return category;
+	}
+	
+	protected Chapter getChapterOrThrow(Lecture lecture) {
 		Chapter chapter = lecture.getChapter();
 		if (chapter == null)
 			throw new ChapterNotFoundException();
 		return chapter;
 	}
 
-	protected Lecture getLecture(LectureTest test) {
+	protected Lecture getLectureOrThrow(LectureTest test) {
 		Lecture lecture = test.getLecture();
 		if (lecture == null)
 			throw new LectureNotFoundException();
 		return lecture;
 	}
 	
-	protected LectureTest getLectureTest(TestQuestion question) {
+	protected LectureTest getLectureTestOrThrow(TestQuestion question) {
 		LectureTest test = question.getLectureTest();
+		if (test == null)
+			throw new TestNotFoundException();
+		return test;
+	}
+	
+	protected LectureTest getLectureTestOrThrow(Lecture lecture) {
+		LectureTest test = lecture.getLectureTest();
 		if (test == null)
 			throw new TestNotFoundException();
 		return test;

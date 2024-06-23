@@ -96,9 +96,9 @@ public class TestController extends BaseController {
 	ModelAndView getEdit(@PathVariable("id") Long id) {
 		// find and load main data of test
 		LectureTest test = findTest(id);
-		Lecture lecture = getLecture(test);
-		Chapter chapter = getChapter(lecture);
-		Course course = getCourse(chapter);
+		Lecture lecture = getLectureOrThrow(test);
+		Chapter chapter = getChapterOrThrow(lecture);
+		Course course = getCourseOrThrow(chapter);
 		CourseCategory category = course.getCategory();
 		
 		ModelAndView model = new ModelAndView(VIEW_EDIT_TEST);
@@ -120,9 +120,9 @@ public class TestController extends BaseController {
 	String postEdit(Model model, @ModelAttribute EditTestForm formData, Errors errors) {
 		// find and load main data of test
 		LectureTest test = findTest(formData.getTestId());
-		Lecture lecture = getLecture(test);
-		Chapter chapter = getChapter(lecture);
-		Course course = getCourse(chapter);
+		Lecture lecture = getLectureOrThrow(test);
+		Chapter chapter = getChapterOrThrow(lecture);
+		Course course = getCourseOrThrow(chapter);
 		CourseCategory category = course.getCategory();
 		model.addAttribute("formData", formData);
 		model.addAttribute("lecture", lecture);
@@ -158,7 +158,7 @@ public class TestController extends BaseController {
 	@GetMapping("/delete/{id}")
 	String getDelete(@PathVariable("id") Long id) {
 		LectureTest test = findTest(id);
-		Lecture lecture = getLecture(test);
+		Lecture lecture = getLectureOrThrow(test);
 		// сначала над отвязать тест от лекции
 		lecture.setLectureTest(null);
 		lectureRepo.save(lecture);
