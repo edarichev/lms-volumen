@@ -2,7 +2,6 @@ package volumen.model;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.data.jpa.repository.Query;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;

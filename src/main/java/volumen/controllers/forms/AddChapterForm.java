@@ -3,13 +3,10 @@ package volumen.controllers.forms;
 import java.io.Serializable;
 
 import lombok.Data;
-import volumen.data.ChaptersRepository;
 import volumen.data.CourseRepository;
-import volumen.exceptions.CategoryNotFoundException;
 import volumen.exceptions.CourseNotFoundException;
 import volumen.model.Chapter;
 import volumen.model.Course;
-import volumen.model.CourseCategory;
 
 @Data
 public class AddChapterForm implements Serializable {

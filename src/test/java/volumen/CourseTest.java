@@ -17,12 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import volumen.data.AnswersRepository;
 import volumen.data.ChaptersRepository;
 import volumen.data.CourseCategoryRepository;
@@ -48,8 +43,8 @@ import volumen.model.TestQuestion;
 @Order(1)
 public class CourseTest {
 
-	@Autowired
-	private MockMvc mvc;
+	//@Autowired
+	//private MockMvc mvc;
 	@Autowired
 	private CourseCategoryRepository repoCategories;
 	@Autowired
@@ -67,7 +62,7 @@ public class CourseTest {
 	@Autowired
 	private UsersRepository repoUsers;
 	@Autowired
-	private TransactionTemplate transactionTemplate;
+	//private TransactionTemplate transactionTemplate;
 
 	Long firstCourseCategoryId = -1L;
 	Long secondCourseCategoryId = -1L;

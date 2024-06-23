@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.springframework.util.Assert;
-
 import volumen.exceptions.CircularCategoryReferenceException;
 import volumen.model.CourseCategory;
 import volumen.model.dto.IdNamePair;
@@ -21,7 +19,8 @@ public class CategoryTreeBuilder {
 	 */
 	public static List<IdNamePair<Long>> buildPathToRoot(List<CourseCategory> collection, CourseCategory startFrom) {
 		List<IdNamePair<Long>> path = new ArrayList<>();
-		path.add(new IdNamePair<Long>(startFrom.getId(), startFrom.getName())); // надо или не надо?
+		// пока добавляем стартовую категорию, там видно будет, надо или не надо:
+		path.add(new IdNamePair<Long>(startFrom.getId(), startFrom.getName()));
 		var parent = startFrom.getParent();
 		if (startFrom == null || parent == null)
 			return path;

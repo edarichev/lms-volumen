@@ -1,9 +1,6 @@
 package volumen;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,8 +14,6 @@ import lombok.Data;
 @Table(name = "Users")
 @Data
 public class User {
-	
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue

@@ -3,8 +3,6 @@ package volumen.controllers.forms;
 import java.util.ArrayList;
 
 import lombok.Data;
-import volumen.model.QuestionType;
-import volumen.model.dto.AnswerDTO;
 import volumen.model.dto.IdNamePair;
 import volumen.model.dto.TestQuestionDTO;
 
