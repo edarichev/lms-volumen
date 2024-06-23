@@ -33,7 +33,6 @@ import volumen.model.dto.TestQuestionDTO;
 public class TestRunController extends BaseController {
 	
 	private static final String VIEW_RUN_FULL_TEST = "test/test_run_full";
-	private static final String VIEW_SHOW_RESULTS = "test/test_run_show_results";
 	
 	@Autowired
 	LecturesRepository lectureRepo;
@@ -49,9 +48,6 @@ public class TestRunController extends BaseController {
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
 		
-		ModelAndView model = new ModelAndView();
-		model.setViewName(VIEW_RUN_FULL_TEST);
-		
 		ExamSetDTO exam = makeExamSetDTO(lecture, test, chapter, course);
 		
 		TestRunForm formData = new TestRunForm();
@@ -60,6 +56,8 @@ public class TestRunController extends BaseController {
 		formData.setLectureId(lectureId);
 		formData.setTestId(test.getId());
 		
+		ModelAndView model = new ModelAndView();
+		model.setViewName(VIEW_RUN_FULL_TEST);
 		model.addObject("formData", formData);
 		model.addObject("lecture", lecture);
 		model.addObject("chapter", chapter);
@@ -76,6 +74,7 @@ public class TestRunController extends BaseController {
 		exam.setCourseId(course.getId());
 		exam.setLectureTestId(test.getId());
 		exam.setLectureId(lecture.getId());
+		
 		ArrayList<TestQuestionDTO> questions = new ArrayList<TestQuestionDTO>();
 		for (var question : test.getQuestions()) {
 			ArrayList<AnswerDTO> answersList = new ArrayList<AnswerDTO>();
@@ -99,8 +98,20 @@ public class TestRunController extends BaseController {
 		var lecture = getLectureOrThrow(test);
 		var chapter = getChapterOrThrow(lecture);
 		var course = getCourseOrThrow(chapter);
-		// restore DTO from fields
-		// exam results
+		
+		ExamResultsDTO result = checkUserAnswers(request, test);
+		model.addObject("result", result);
+		model.addObject("formData", formData);
+		model.addObject("lecture", lecture);
+		model.addObject("chapter", chapter);
+		model.addObject("course", course);
+		model.addObject("isPostBack", true);
+		model.addObject("pageTitle", getMessage("test.running") + ": " + lecture.getName());
+		return model;
+	}
+
+	private ExamResultsDTO checkUserAnswers(HttpServletRequest request, LectureTest test) {
+		// restore DTO from fields and build exam results
 		ExamResultsDTO result = new ExamResultsDTO();
 		for (var question : test.getQuestions()) {
 			boolean isValidAnswer = false;
@@ -117,7 +128,7 @@ public class TestRunController extends BaseController {
 				break;
 			}
 			case MULTIPLE: {
-				// checkboxes
+				// checkboxes: answer id as selected value
 				isValidAnswer = true;
 				for (var answer : question.getAnswers()) {
 					String strValue = request.getParameter("answer_" + answer.getId());
@@ -159,14 +170,7 @@ public class TestRunController extends BaseController {
 			}
 			result.getQuestions().add(new QuestionResultDTO(question.getId(), question.getText(), isValidAnswer));
 		}
-		model.addObject("result", result);
-		model.addObject("formData", formData);
-		model.addObject("lecture", lecture);
-		model.addObject("chapter", chapter);
-		model.addObject("course", course);
-		model.addObject("isPostBack", true);
-		model.addObject("pageTitle", getMessage("test.running") + ": " + lecture.getName());
-		return model;
+		return result;
 	}
 
 	private Lecture findLecture(Long lectureId) {

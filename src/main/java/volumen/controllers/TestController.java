@@ -17,8 +17,6 @@ import org.springframework.web.servlet.ModelAndView;
 import volumen.controllers.forms.EditTestForm;
 import volumen.data.LectureTestRepository;
 import volumen.data.LecturesRepository;
-import volumen.exceptions.ChapterNotFoundException;
-import volumen.exceptions.CourseNotFoundException;
 import volumen.exceptions.LectureNotFoundException;
 import volumen.exceptions.TestNotFoundException;
 import volumen.model.Chapter;
@@ -27,7 +25,6 @@ import volumen.model.CourseCategory;
 import volumen.model.Lecture;
 import volumen.model.LectureTest;
 import volumen.model.TestQuestion;
-import volumen.model.dto.TestQuestionDTO;
 import volumen.web.ui.CategoryTreeBuilder;
 
 /**
@@ -42,7 +39,6 @@ import volumen.web.ui.CategoryTreeBuilder;
 @RequestMapping("/test")
 public class TestController extends BaseController {
 	
-	private static final String VIEW_SELECTED_TEST = "test/test_view";
 	private static final String VIEW_EDIT_TEST = "test/test_edit";
 	
 	@Autowired
@@ -64,8 +60,8 @@ public class TestController extends BaseController {
 	 */
 	@GetMapping("/add/{lectureId}")
 	String getAdd(@PathVariable("lectureId") Long lectureId) {
-		Lecture lecture = lectureRepo.findById(lectureId).orElseThrow(() -> new LectureNotFoundException(lectureId));
-		LectureTest test = lecture.getLectureTest();
+		Lecture lecture = findLectureOrThrow(lectureId);
+		LectureTest test = getLectureTestOrThrow(lecture);
 		if (test == null) {
 			// check possible dangling reference
 			test = testRepo.findTestByLectureId(lectureId);
@@ -82,6 +78,11 @@ public class TestController extends BaseController {
 		return "redirect:/test/edit/" + test.getId();
 	}
 
+	private Lecture findLectureOrThrow(Long lectureId) {
+		Lecture lecture = lectureRepo.findById(lectureId).orElseThrow(() -> new LectureNotFoundException(lectureId));
+		return lecture;
+	}
+
 	private LectureTest createTest(Lecture lecture) {
 		LectureTest test;
 		test = new LectureTest();		
@@ -95,16 +96,17 @@ public class TestController extends BaseController {
 	@GetMapping("/edit/{id}")
 	ModelAndView getEdit(@PathVariable("id") Long id) {
 		// find and load main data of test
-		LectureTest test = findTest(id);
+		LectureTest test = findTestOrThrow(id);
 		Lecture lecture = getLectureOrThrow(test);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
 		CourseCategory category = course.getCategory();
 		
-		ModelAndView model = new ModelAndView(VIEW_EDIT_TEST);
 		EditTestForm formData = new EditTestForm();
 		formData.setTestId(test.getId());
 		formData.setLectureId(lecture.getId());
+
+		ModelAndView model = new ModelAndView(VIEW_EDIT_TEST);
 		model.addObject("formData", formData);
 		model.addObject("lecture", lecture);
 		model.addObject("chapter", chapter);
@@ -119,7 +121,7 @@ public class TestController extends BaseController {
 	@PostMapping("/edit/{id}")
 	String postEdit(Model model, @ModelAttribute EditTestForm formData, Errors errors) {
 		// find and load main data of test
-		LectureTest test = findTest(formData.getTestId());
+		LectureTest test = findTestOrThrow(formData.getTestId());
 		Lecture lecture = getLectureOrThrow(test);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
@@ -157,8 +159,9 @@ public class TestController extends BaseController {
 
 	@GetMapping("/delete/{id}")
 	String getDelete(@PathVariable("id") Long id) {
-		LectureTest test = findTest(id);
+		LectureTest test = findTestOrThrow(id);
 		Lecture lecture = getLectureOrThrow(test);
+		// в таком порядке:
 		// сначала над отвязать тест от лекции
 		lecture.setLectureTest(null);
 		lectureRepo.save(lecture);
@@ -167,13 +170,11 @@ public class TestController extends BaseController {
 		return "redirect:/lecture/" + lecture.getId();
 	}
 
-	protected LectureTest findTest(Long id) {
-		LectureTest test = testRepo.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-		return test;
+	protected LectureTest findTestOrThrow(Long id) {
+		return testRepo.findById(id).orElseThrow(() -> new TestNotFoundException(id));
 	}
 	
 	protected ArrayList<TestQuestion> getTestQuestions(LectureTest test) {
-		ArrayList<TestQuestion> list = test.getQuestions().stream().collect(Collectors.toCollection(ArrayList::new));
-		return list;
+		return test.getQuestions().stream().collect(Collectors.toCollection(ArrayList::new));
 	}
 }

@@ -1,7 +1,5 @@
 package volumen.controllers;
 
-import java.util.ArrayList;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,15 +18,16 @@ import volumen.exceptions.ChapterNotFoundException;
 import volumen.exceptions.CourseNotFoundException;
 import volumen.model.Chapter;
 import volumen.model.Course;
+import volumen.model.CourseCategory;
 import volumen.web.ui.CategoryTreeBuilder;
 
 @Controller
 @RequestMapping("/unit")
 public class ChapterController extends BaseController {
 
+	private static final String INDENT = "\u00A0\u00A0";
 	private static final String VIEW_CHAPTER_ADD = "chapter/chapter_add";
 	private static final String VIEW_SELECTED_CHAPTER = "chapter/chapter_view";
-	private static final String VIEW_CHAPTER_NOT_FOUND = "chapter/chapter_not_found";
 	private static final String VIEW_EDIT_CHAPTER = "chapter/chapter_add";
 
 	@Autowired
@@ -44,24 +43,32 @@ public class ChapterController extends BaseController {
 
 	@GetMapping("/{id}")
 	public ModelAndView getChapter(@PathVariable("id") Long id) {
+		Chapter chapter = findChapterOrThrow(id);
+		Course course = getCourseOrThrow(chapter);
+		CourseCategory category = getCategoryOrThrow(course);
+
 		ModelAndView model = new ModelAndView();
-		Chapter chapter = chapterRepo.findById(id).orElseThrow(() -> new ChapterNotFoundException(id));
 		model.setViewName(VIEW_SELECTED_CHAPTER);
-		model.addObject("course", chapter.getCourse());
+		model.addObject("course", course);
 		model.addObject("chapter", chapter);
-		var category = chapter.getCourse().getCategory();
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
 	}
 
+	private Chapter findChapterOrThrow(Long id) {
+		return chapterRepo.findById(id).orElseThrow(() -> new ChapterNotFoundException(id));
+	}
+
 	@GetMapping("/add/{courseId}")
 	public ModelAndView getAdd(@PathVariable("courseId") Long courseId) {
 		Course course = courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
-		ModelAndView model = new ModelAndView(VIEW_CHAPTER_ADD);
 		var formData = new AddChapterForm();
 		formData.setCourseId(courseId);
-		model.addObject("categories", categories(false, "\u00A0\u00A0"));
+		formData.setSequenceNumber(chapterRepo.getNextSequenceNumber(courseId));
+
+		ModelAndView model = new ModelAndView(VIEW_CHAPTER_ADD);
+		model.addObject("categories", buildCategoryListForSelectElement(false, INDENT));
 		model.addObject("formData", formData);
 		model.addObject("pageTitle", getMessage("unit.page_title_add"));
 		model.addObject("course", course);
@@ -74,7 +81,7 @@ public class ChapterController extends BaseController {
 		Course course = courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
 		if (null == formData.getName() || formData.getName().isBlank()) {
 
-			model.addAttribute("categories", categories(false, "\u00A0\u00A0"));
+			model.addAttribute("categories", buildCategoryListForSelectElement(false, INDENT));
 			model.addAttribute("formData", formData);
 			model.addAttribute("pageTitle", getMessage("unit.page_title_add"));
 			model.addAttribute("course", course);
@@ -89,15 +96,17 @@ public class ChapterController extends BaseController {
 
 	@GetMapping("/edit/{id}")
 	public ModelAndView getEdit(@PathVariable("id") Long id) {
-		Chapter chapter = chapterRepo.findById(id).orElseThrow(() -> new ChapterNotFoundException(id));
-		ModelAndView model = new ModelAndView(VIEW_EDIT_CHAPTER);
+		Chapter chapter = findChapterOrThrow(id);
+		Course course = getCourseOrThrow(chapter);
+
 		var formData = new AddChapterForm();
 		formData.setChapterId(id);
 		formData.setName(chapter.getName());
 		formData.setDescription(chapter.getDescription());
-		var course = chapter.getCourse();
 		formData.setCourseId(course.getId());
 		formData.setSequenceNumber(chapter.getSequenceNumber());
+
+		ModelAndView model = new ModelAndView(VIEW_EDIT_CHAPTER);
 		model.addObject("formData", formData);
 		model.addObject("pageTitle", getMessage("unit.page_title_edit"));
 		model.addObject("course", course);
@@ -107,8 +116,8 @@ public class ChapterController extends BaseController {
 	@PostMapping("/edit/{id}")
 	public String postEdit(Model model, @ModelAttribute AddChapterForm formData, Errors errors) {
 		Long id = formData.getChapterId();
-		Chapter chapter = chapterRepo.findById(id).orElseThrow(() -> new ChapterNotFoundException(id));
-		Course course = chapter.getCourse();
+		Chapter chapter = findChapterOrThrow(id);
+		Course course = getCourseOrThrow(chapter);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			model.addAttribute("formData", formData);
 			model.addAttribute("pageTitle", getMessage("unit.page_title_edit"));
@@ -128,8 +137,8 @@ public class ChapterController extends BaseController {
 	
 	@GetMapping("/delete/{id}")
 	public String getDelete(@PathVariable("id") Long id) {
-		Chapter chapter = chapterRepo.findById(id).orElseThrow(() -> new ChapterNotFoundException(id));
-		Course course = chapter.getCourse();
+		Chapter chapter = findChapterOrThrow(id);
+		Course course = getCourseOrThrow(chapter);
 		chapterRepo.delete(chapter);
 		return "redirect:/course/" + course.getId();
 	}

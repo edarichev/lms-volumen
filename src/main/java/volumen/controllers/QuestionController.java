@@ -3,8 +3,6 @@ package volumen.controllers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,8 +29,8 @@ import volumen.model.dto.TestQuestionDTO;
 /**
  * Controller for editing questions
  * 
- * DELETE, SAVE methods placed separately into QuestionRESTController because
- * they works with javascript-based form
+ * SAVE method placed separately into QuestionRESTController because
+ * it works with javascript-based form
  */
 @Controller
 @RequestMapping("/question")
@@ -54,11 +52,11 @@ public class QuestionController extends BaseController {
 
 	@GetMapping("/add/{testId}")
 	ModelAndView getAdd(@PathVariable("testId") Long testId) {
-		LectureTest test = findTest(testId);
+		LectureTest test = findTestOrThrow(testId);
 		Lecture lecture = getLectureOrThrow(test);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
-		ModelAndView model = new ModelAndView(VIEW_QUESTION_ADD);
+
 		EditQuestionForm formData = new EditQuestionForm();
 		formData.setQuestionTypes(buildQuestionTypes());
 		formData.setTestId(testId);
@@ -66,6 +64,7 @@ public class QuestionController extends BaseController {
 				new ArrayList<AnswerDTO>());
 		formData.setQuestion(questionDTO);
 
+		ModelAndView model = new ModelAndView(VIEW_QUESTION_ADD);
 		model.addObject("course", course);
 		model.addObject("chapter", chapter);
 		model.addObject("lecture", lecture);
@@ -79,7 +78,7 @@ public class QuestionController extends BaseController {
 
 	@GetMapping("/edit/{id}")
 	ModelAndView getEdit(@PathVariable("id") Long id) {
-		TestQuestion question = findQuestion(id);
+		TestQuestion question = findQuestionOrThrow(id);
 		LectureTest test = getLectureTestOrThrow(question);
 		Long testId = test.getId();
 		Lecture lecture = getLectureOrThrow(test);
@@ -96,7 +95,9 @@ public class QuestionController extends BaseController {
 		Collections.sort(answers, new Comparator<AnswerDTO>() {
 			@Override
 			public int compare(AnswerDTO arg0, AnswerDTO arg1) {
-				return (int) (arg0.getSequenceNumber() - arg1.getSequenceNumber());
+				long s0 = arg0.getSequenceNumber() == null ? 0 : arg0.getSequenceNumber();
+				long s1 = arg1.getSequenceNumber() == null ? 0 : arg1.getSequenceNumber();
+				return (int) (s0 - s1);
 			}
 		});
 		TestQuestionDTO questionDTO = new TestQuestionDTO(testId, id, question.getText(),
@@ -114,10 +115,6 @@ public class QuestionController extends BaseController {
 		return model;
 	}
 
-	private TestQuestion findQuestion(Long id) {
-		return questionRepo.findById(id).orElseThrow(() -> new QuestionNotFoundException(id));
-	}
-
 	protected ArrayList<IdNamePair<String>> buildQuestionTypes() {
 		ArrayList<IdNamePair<String>> types = new ArrayList<>();
 		types.add(new IdNamePair<String>(QuestionType.TEXT.name(), getMessage("question.type_name_text")));
@@ -126,7 +123,11 @@ public class QuestionController extends BaseController {
 		return types;
 	}
 
-	protected LectureTest findTest(Long id) {
+	private TestQuestion findQuestionOrThrow(Long id) {
+		return questionRepo.findById(id).orElseThrow(() -> new QuestionNotFoundException(id));
+	}
+
+	protected LectureTest findTestOrThrow(Long id) {
 		LectureTest test = testRepo.findById(id).orElseThrow(() -> new TestNotFoundException(id));
 		return test;
 	}

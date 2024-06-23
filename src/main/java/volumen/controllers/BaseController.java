@@ -37,7 +37,7 @@ public class BaseController {
 		return categoriesList;
 	}
 
-	protected List<IdNamePair<Long>> categories(boolean includeEmptyRoot, String indent) {
+	protected List<IdNamePair<Long>> buildCategoryListForSelectElement(boolean includeEmptyRoot, String indent) {
 		ArrayList<CourseCategory> list = getCategoriesList();
 		List<IdNamePair<Long>> items;
 		try {

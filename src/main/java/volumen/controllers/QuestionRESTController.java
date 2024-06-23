@@ -3,21 +3,17 @@ package volumen.controllers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import volumen.data.AnswersRepository;
 import volumen.data.LectureTestRepository;
@@ -34,21 +30,16 @@ import volumen.model.dto.TestQuestionDTO;
 @Controller
 @RequestMapping("/questionservice")
 public class QuestionRESTController {
-	
+
 	@Autowired
 	TestQuestionRepository questionRepo;
-	
+
 	@Autowired
 	LectureTestRepository testRepo;
-	
+
 	@Autowired
 	AnswersRepository answersRepo;
 
-    @GetMapping(path = "/get/{id}", produces = "application/json")
-    public @ResponseBody TestQuestionDTO getBook(@PathVariable("id") Long id) {
-        return new TestQuestionDTO();
-    }
-    
 	@GetMapping("/delete/{id}")
 	String getDelete(@PathVariable("id") Long id) {
 		TestQuestion question = findQuestion(id);
@@ -57,18 +48,17 @@ public class QuestionRESTController {
 		return "redirect:/test/edit/" + test.getId();
 	}
 
-    private TestQuestion findQuestion(Long id) {
+	private TestQuestion findQuestion(Long id) {
 		return questionRepo.findById(id).orElseThrow(() -> new QuestionNotFoundException(id));
 	}
 
 	// /questionservice/save
-    @PostMapping(path= "/save", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<TestQuestionDTO> saveQuestion(@RequestBody TestQuestionDTO questionDTO) throws Exception 
-	{
-    	TestQuestionDTO savedDTO = saveTestQuestion(questionDTO);
-    	return new ResponseEntity<>(savedDTO, HttpStatus.CREATED);
+	@PostMapping(path = "/save", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<TestQuestionDTO> saveQuestion(@RequestBody TestQuestionDTO questionDTO) throws Exception {
+		TestQuestionDTO savedDTO = saveTestQuestion(questionDTO);
+		return new ResponseEntity<>(savedDTO, HttpStatus.CREATED);
 	}
-    
+
 	private TestQuestionDTO saveTestQuestion(TestQuestionDTO questionDTO) {
 		TestQuestion question = createOrFindQuestion(questionDTO);
 		// reorder and change sequence numbers [1..n]
@@ -79,7 +69,7 @@ public class QuestionRESTController {
 		questionDTO.setId(question.getId());
 		return questionDTO;
 	}
-	
+
 	private void replaceAnswers(TestQuestionDTO questionDTO, TestQuestion question,
 			ArrayList<AnswerDTO> orderedAnswers) {
 		if (orderedAnswers.isEmpty()) {
@@ -93,6 +83,7 @@ public class QuestionRESTController {
 				answer.setTestQuestion(question);
 				answer.setText(answerDTO.getAnswer());
 				answer.setValid(answerDTO.getValid());
+				answer.setSequenceNumber(answerDTO.getSequenceNumber());
 				question.getAnswers().add(answer);
 				answersRepo.save(answer);
 				answerDTO.setId(answer.getId());
@@ -124,13 +115,14 @@ public class QuestionRESTController {
 				}
 				if (i == existingAnswers.size()) {
 					// id > 0 here,
-					// not found, but id was present in previous request, 
+					// not found, but id was present in previous request,
 					// this answer was deleted between requests, set id to -1
+					// and re-create as new answer later
 					a.setId(-1L);
 					amap.put(a, null);
 				}
 			}
-			
+
 			// 1. remove, if not in a request set
 			for (int i = 0; i < existingAnswers.size(); ++i) {
 				var answer = existingAnswers.get(i);
@@ -157,17 +149,20 @@ public class QuestionRESTController {
 			}
 		}
 	}
-	
+
 	private ArrayList<AnswerDTO> reorderAnswersBySequenceNumber(TestQuestionDTO questionDTO) {
 		ArrayList<AnswerDTO> orderedAnswers = questionDTO.getAnswers().stream()
-				.filter((k)->k.getAnswer() != null && !k.getAnswer().isBlank())
-				.sorted((k1, k2) -> (int)(k1.getSequenceNumber() - k2.getSequenceNumber()))
-				.collect(Collectors.toCollection(ArrayList::new));
+				.filter((k) -> k.getAnswer() != null && !k.getAnswer().isBlank()).sorted((k1, k2) -> {
+					Long n1 = k1.getSequenceNumber() == null ? 0 : k1.getSequenceNumber();
+					Long n2 = k2.getSequenceNumber() == null ? 0 : k2.getSequenceNumber();
+					return (int) (n1 - n2);
+				}).collect(Collectors.toCollection(ArrayList::new));
+		// set order numbers in regular form: 1, 2, 3, ...
 		for (int i = 0; i < orderedAnswers.size(); ++i)
-			orderedAnswers.get(i).setSequenceNumber((long)(i + 1));
+			orderedAnswers.get(i).setSequenceNumber((long) (i + 1));
 		return orderedAnswers;
 	}
-	
+
 	private TestQuestion createOrFindQuestion(TestQuestionDTO questionDTO) {
 		TestQuestion question = null;
 		if (questionDTO.getId() > 0) {
@@ -179,7 +174,8 @@ public class QuestionRESTController {
 		if (question == null) {
 			// may be not found, create a new question
 			question = new TestQuestion();
-			LectureTest test = testRepo.findById(questionDTO.getTestId()).orElseThrow(() -> new TestNotFoundException());
+			LectureTest test = testRepo.findById(questionDTO.getTestId())
+					.orElseThrow(() -> new TestNotFoundException());
 			question.setLectureTest(test);
 		}
 		question.setText(questionDTO.getText());
