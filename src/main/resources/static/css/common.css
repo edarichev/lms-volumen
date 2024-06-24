@@ -1,17 +1,19 @@
 body {
 	background-color: rgb(255, 255, 255);
 	font-family: Verdana, Arial, serif;
-	margin: 0;
-	padding: 0;
+	margin: 0px;
+	padding: 0px;
 }
 
 .mainframe {
 	background-color: rgb(255, 255, 255);
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     border-width: 0px;
     width: 100%;
     height: 100%;
+    border-collapse: collapse; 
+    border-spacing: 0;
 }
 
 .mainframe td {

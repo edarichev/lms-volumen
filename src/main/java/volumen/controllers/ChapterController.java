@@ -13,7 +13,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import volumen.controllers.forms.AddChapterForm;
 import volumen.data.ChaptersRepository;
-import volumen.data.CourseRepository;
 import volumen.exceptions.ChapterNotFoundException;
 import volumen.exceptions.CourseNotFoundException;
 import volumen.model.Chapter;
@@ -25,13 +24,9 @@ import volumen.web.ui.CategoryTreeBuilder;
 @RequestMapping("/unit")
 public class ChapterController extends BaseController {
 
-	private static final String INDENT = "\u00A0\u00A0";
 	private static final String VIEW_CHAPTER_ADD = "chapter/chapter_add";
 	private static final String VIEW_SELECTED_CHAPTER = "chapter/chapter_view";
 	private static final String VIEW_EDIT_CHAPTER = "chapter/chapter_add";
-
-	@Autowired
-	private CourseRepository courseRepo;
 
 	@Autowired
 	ChaptersRepository chapterRepo;

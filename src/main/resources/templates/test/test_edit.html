@@ -65,7 +65,7 @@
 		<!-- questions -->
 		<th:block th:if="${questions != null && questions.size() > 0}">
 		<h3 th:text="#{test.questions_of_this_test}"></h3>
-		<table width="100%" style="padding:0px">
+		<table style="padding:0px;width:100%;">
 		  <tr th:each="q : ${questions}">
 		  <td style="border-top:1px darkgray dashed;width:95%;">
 		  <p><b th:text="${q.text}"></b></p>

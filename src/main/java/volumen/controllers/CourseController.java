@@ -3,7 +3,6 @@ package volumen.controllers;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import volumen.controllers.forms.AddCourseForm;
-import volumen.data.CourseRepository;
-import volumen.exceptions.CategoryNotFoundException;
-import volumen.exceptions.CourseNotFoundException;
 import volumen.model.Chapter;
 import volumen.model.Course;
 import volumen.model.CourseCategory;
@@ -28,13 +24,9 @@ import volumen.web.ui.CategoryTreeBuilder;
 @RequestMapping("/course")
 public class CourseController extends BaseController {
 
-	protected static final String INDENT = "\u00A0\u00A0";
 	private static final String VIEW_COURSE_ADD = "course/course_add";
 	private static final String VIEW_SELECTED_COURSE = "course/course_view";
 
-	@Autowired
-	private CourseRepository courseRepo;
-	
 	@GetMapping(path = {"", "/"})
 	String index() {
 		return "redirect:/category"; // course id or category must be selected
@@ -133,15 +125,6 @@ public class CourseController extends BaseController {
 	    Course course = findCourseOrThrow(id);
 	    courseRepo.delete(course);
 	    return "redirect:/category";
-	}
-
-	private Course findCourseOrThrow(Long id) {
-		var course = courseRepo.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
-		return course;
-	}
-
-	private CourseCategory findCategoryOrThrow(Long categoryId) {
-		return categoryRepo.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
 	}
 
 }

@@ -6,9 +6,6 @@ $ psql -d postgres -U postgres
 postgres=# create database volumendev1;
 CREATE DATABASE
 postgres=# create user volumendev1 with password 'password';
-CREATE ROLE
-postgres=# grant all privilege
-
 postgres=# grant all privileges on database volumendev1 to volumendev1;
 GRANT
 postgres=# \connect volumendev1;

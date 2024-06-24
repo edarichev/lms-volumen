@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
 import volumen.data.CourseCategoryRepository;
+import volumen.data.CourseRepository;
 import volumen.exceptions.CategoryNotFoundException;
 import volumen.exceptions.ChapterNotFoundException;
 import volumen.exceptions.CircularCategoryReferenceException;
@@ -20,16 +21,44 @@ import volumen.model.Lecture;
 import volumen.model.LectureTest;
 import volumen.model.TestQuestion;
 import volumen.model.dto.IdNamePair;
+import volumen.web.ui.CategoryNode;
 import volumen.web.ui.CategoryTreeBuilder;
 
 public class BaseController {
 	
+	protected static final String INDENT = "\u00A0\u00A0";
+
 	@Autowired
 	protected CourseCategoryRepository categoryRepo;
 	
 	@Autowired
+	protected CourseRepository courseRepo;
+
+	@Autowired
     protected MessageSource messageSource;
 	
+	protected ArrayList<CategoryNode> buildCategoriesTreeList() {
+		return buildCategoriesList(null);
+	}
+
+	protected ArrayList<CategoryNode> buildCategoriesList(CourseCategory parentCategory) {
+		List<CourseCategory> target = new ArrayList<>();
+		categoryRepo.findAll().forEach(target::add);
+		CategoryNode rootCat = null;
+		ArrayList<CategoryNode> categories = null;
+		try {
+			if (parentCategory == null)
+				rootCat = CategoryTreeBuilder.buildTree(target);
+			else
+				rootCat = CategoryTreeBuilder.buildTree(target, parentCategory);
+			categories = rootCat == null ? null : rootCat.getItems();
+		} catch (CircularCategoryReferenceException e) {
+			e.printStackTrace();
+		}
+		if (categories == null)
+			categories = new ArrayList<CategoryNode>();
+		return categories;
+	}
 	protected ArrayList<CourseCategory> getCategoriesList() {
 		var categoriesList = new ArrayList<CourseCategory>();
 		for (var cat : categoryRepo.findAll())
@@ -56,6 +85,15 @@ public class BaseController {
 		return messageSource.getMessage(key, null, null);
 	}
 	
+	protected CourseCategory findCategoryOrThrow(Long categoryId) {
+		return categoryRepo.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(categoryId));
+	}
+
+	protected Course findCourseOrThrow(Long id) {
+		var course = courseRepo.findById(id).orElseThrow(() -> new CourseNotFoundException(id));
+		return course;
+	}
+
 	protected Course getCourseOrThrow(Chapter chapter) {
 		Course course = chapter.getCourse();
 		if (course == null)

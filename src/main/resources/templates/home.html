@@ -8,8 +8,21 @@
 </head>
 <body>
     <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
-    <p><a th:href="@{/category}" th:text="#{header.categories_of_courses}">Categories</a></p>
-     <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
+    <table style="width:100%; height:100%">
+    <tr>
+        <td valign="top" style="white-space:nowrap;border-right:1px black dotted;padding:5px;">
+	    <h3 th:text="#{header.catalog}"></h3>
+	     <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
+        </td>
+        <td valign="top" style="width:90%;padding:5px;">
+	        <h3 th:text="#{header.all_courses}">ALL COURSES</h3>
+	        <th:block th:each="c : ${courses}">
+		        <h4><a th:href="@{/course/{courseId}(courseId=${c.id})}" th:text="${c.name}">COURSE NAME</a></h4>
+		        <th:block th:utext="${c.description}" />
+            </th:block>
+        </td>
+    </tr>
+    </table>
      
 	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>

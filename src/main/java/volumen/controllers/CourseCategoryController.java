@@ -1,7 +1,6 @@
 package volumen.controllers;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import volumen.controllers.forms.AddCourseCategoryForm;
 import volumen.exceptions.CategoryNotFoundException;
-import volumen.exceptions.CircularCategoryReferenceException;
 import volumen.model.CourseCategory;
 import volumen.web.ui.CategoryNode;
 import volumen.web.ui.CategoryTreeBuilder;
@@ -24,16 +22,14 @@ import volumen.web.ui.CategoryTreeBuilder;
 @RequestMapping("/category")
 public class CourseCategoryController extends BaseController {
 
-	private static final String INDENT = "\u00A0\u00A0";
-	public static final String VIEW_CATEGORY_ADD = "category/category_add";
-	public static final String VIEW_CATEGORY_HOME = "category/category_home";
-	public static final String VIEW_SELECTED_CATEGORY = "category/category_view";
-	public static final String VIEW_CATEGORY_NOT_FOUND = "category/category_not_found";
-	public static final String VIEW_EDIT_CATEGORY = "category/category_add";
+	private static final String VIEW_CATEGORY_ADD = "category/category_add";
+	private static final String VIEW_CATEGORY_HOME = "category/category_home";
+	private static final String VIEW_SELECTED_CATEGORY = "category/category_view";
+	private static final String VIEW_EDIT_CATEGORY = "category/category_add";
 
 	@GetMapping(value = { "/", "" })
 	String index(Model model) {
-		ArrayList<CategoryNode> categories = buildCategoriesList();
+		ArrayList<CategoryNode> categories = buildCategoriesTreeList();
 		model.addAttribute("categories", categories);
 		return VIEW_CATEGORY_HOME;
 	}
@@ -131,34 +127,6 @@ public class CourseCategoryController extends BaseController {
 		CourseCategory category = categoryRepo.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
 		categoryRepo.delete(category);
 		return "redirect:/category";
-	}
-
-	private ArrayList<CategoryNode> buildCategoriesList() {
-		return buildCategoriesList(null);
-	}
-
-	private ArrayList<CategoryNode> buildCategoriesList(CourseCategory parentCategory) {
-		List<CourseCategory> target = new ArrayList<>();
-		categoryRepo.findAll().forEach(target::add);
-		CategoryNode rootCat = null;
-		ArrayList<CategoryNode> categories = null;
-		try {
-			if (parentCategory == null)
-				rootCat = CategoryTreeBuilder.buildTree(target);
-			else
-				rootCat = CategoryTreeBuilder.buildTree(target, parentCategory);
-			categories = rootCat == null ? null : rootCat.getItems();
-		} catch (CircularCategoryReferenceException e) {
-			e.printStackTrace();
-		}
-		if (categories == null)
-			categories = new ArrayList<CategoryNode>();
-		return categories;
-	}
-
-	private CourseCategory findCategoryOrThrow(Long id) {
-		CourseCategory category = categoryRepo.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
-		return category;
 	}
 
 }
