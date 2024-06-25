@@ -9,12 +9,7 @@
 <body>
 	<th:block th:insert="~{pagefragments.html :: header}">
 	</th:block>
-    <p>
-    <a th:href="@{/category/}" th:text="#{category.all}">ALL CATEGORIES</a> /
-    <span th:each="cp : ${categoryPath}">
-        <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">CATEGORY NAME</a> /
-    </span>
-    </p>
+
 	<h1 th:text="#{test.edit_page_title}"></h1>
 	<form method="post" th:object="${formData}" id="add_lecture_form">
 

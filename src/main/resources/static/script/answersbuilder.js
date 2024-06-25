@@ -48,7 +48,7 @@ class AnswersBuilder {
                     maxValue = num;
             }
             return maxValue + 1;
-        };
+        }; // getNextOrderNumber
 
         this.addAnswer = function(aQuestionId, anOrderNumber, anAnswer, aTrue) {
             var tbodyRef = document.getElementById(this.tableName).getElementsByTagName('tbody')[0];
@@ -109,7 +109,7 @@ class AnswersBuilder {
             var deleteRowButton = document.createElement("a");
             deleteRowButton.href = "#";
             deleteRowButton.innerText = "Удалить";
-            deleteRowButton.onclick = function(e) {
+            deleteRowButton.onclick = function() {
                 if (confirm("Удалить этот вариант?")) {
                     var ownerRow = this.parentNode.parentNode;
                     var ownerTableBody = ownerRow.parentNode;
@@ -117,7 +117,7 @@ class AnswersBuilder {
                 }
             };
             cellAction.appendChild(deleteRowButton);
-        };
+        }; // addAnswer
 
 
         this.getAnswers = function() {
@@ -150,7 +150,7 @@ class AnswersBuilder {
                 arr.push(obj);
             }
             return arr;
-        };
+        }; // getAnswers
         
         this.serialize = function(testId, questionId, questionText, questionType) {
             var questionDTO = {
@@ -161,7 +161,7 @@ class AnswersBuilder {
                 'answers' : this.getAnswers() 
             };
             return questionDTO;
-        }
+        } // serialize
         
         /**
          * Deserialize answers and put they into table
@@ -175,7 +175,7 @@ class AnswersBuilder {
                 var a = question.answers[i];
                 this.addAnswer(a.id, a.sequenceNumber, a.answer, a.valid);
             }
-        }
+        } // deserialize
         
 
         // create content
@@ -213,7 +213,7 @@ class AnswersBuilder {
         headerRow.appendChild(th);
         th.innerText = "Действия";
 
-        var tbody = table.createTBody();
+        table.createTBody();
 
         // footer
         var tfoot = table.createTFoot();
@@ -226,7 +226,7 @@ class AnswersBuilder {
         btnAddAnswer.type = 'button';
         btnAddAnswer.value = 'Добавить вариант ответа';
         btnAddAnswer.builderObject = this;
-        btnAddAnswer.onclick = function(e) {
+        btnAddAnswer.onclick = function() {
             this.builderObject.addAnswer();
         };
         footCell.appendChild(btnAddAnswer);

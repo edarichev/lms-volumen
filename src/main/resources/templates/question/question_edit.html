@@ -14,7 +14,6 @@
 	</th:block>
 	<h1 th:text="#{question.edit_page_title}"></h1>
 	<form method="post" th:object="${formData}" id="add_lecture_form">
-	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
 	   
 		<p><span th:text="#{course}"></span>:
 		<a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>

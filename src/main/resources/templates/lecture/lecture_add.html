@@ -4,22 +4,27 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <title th:text="${pageTitle}"></title>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script type="text/javascript" th:src="@{/static/script/rcmanager.js}"></script>
 <th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
 </head>
 <body>
 	<th:block th:insert="~{pagefragments.html :: header}">
 	</th:block>
 	<h1 th:text="${pageTitle}"></h1>
-	<form method="post" th:object="${formData}" id="add_lecture_form">
-	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
-	   <span class="error" th:if="${#fields.hasErrors('*')}">ERRORS</span>
-		<ul th:if="${#fields.hasErrors('*')}">
-		  <li th:each="error : ${#fields.errors('*')}" th:text="${error}">ERROR</li>
-		</ul>
-		<p><span th:text="#{course}"></span>:
-		<a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>
-		
-		<p><span th:text="#{unit}"></span>:
+	<form method="post" th:object="${formData}" id="add_lecture_form" enctype="multipart/form-data">
+	<table style="width:100%; height:100%;">
+	<tr>
+	   <td valign="top">
+	   <!-- content editor -->
+	          <span class="error" th:if="${#fields.hasErrors('*')}">ERRORS</span>
+        <ul th:if="${#fields.hasErrors('*')}">
+          <li th:each="error : ${#fields.errors('*')}" th:text="${error}">ERROR</li>
+        </ul>
+        <p><span th:text="#{course}"></span>:
+        <a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>
+        
+        <p><span th:text="#{unit}"></span>:
         <a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="${chapter.name}"></a></p>
         
         <p th:if="${formData.lectureId != null}">
@@ -27,12 +32,12 @@
         <a th:href="@{/lecture/{id}(id=${formData.lectureId})}" th:text="${formData.name}">LECTURE NAME</a>
         </p>
         
-		<table>
-			<tr>
-				<td><label th:text="#{lecture.name}"></label></td>
-				<td><input type="text" id="lecture_name" name="lecture_name" th:field="*{name}" />
-				<span class="error" th:text="${requiredError}"></span></td>
-			</tr>
+        <table style="width:100%">
+            <tr>
+                <td style="width:300px;"><label th:text="#{lecture.name}"></label></td>
+                <td><input type="text" id="lecture_name_text_field" name="lecture_name_text_field" th:field="*{name}" />
+                <span class="error" th:text="${requiredError}"></span></td>
+            </tr>
             <tr>
                 <td><label th:text="#{lecture.parent_unit}"></label></td>
                 <td><select id="parentUnit" name="parentUnit" th:field="*{chapterId}">
@@ -42,40 +47,53 @@
             </tr>
             <tr>
                 <td><label th:text="#{lecture.sequence_number}"></label></td>
-                <td><input type="text" id="lecture_sequence_number" name="lecture_sequence_number" th:field="*{sequenceNumber}" /></td>
+                <td><input type="number" id="lecture_sequence_number_field" name="lecture_sequence_number_field" th:field="*{sequenceNumber}" /></td>
             </tr>
             <tr>
                 <td><label th:text="#{lecture.description_optional}" for="lecture_description"></label></td>
-                <td><textarea id="lecture_description" name="lecture_description" th:field="*{description}"></textarea></td>
+                <td><textarea style="width:100%;" id="lecture_description" name="lecture_description" th:field="*{description}"></textarea></td>
             </tr>
             <tr>
                 <td colspan="2">
                 <textarea id="lecture_content" name="lecture_content" th:field="*{content}" rows=5 cols=80></textarea>
                 </td>
             </tr>
-			<tr>
-				<td></td>
-				<td>
-				<table>
-				<tr>
-				<td><input type="submit" th:value="#{save}" /></td>
-				<td><div th:if="${formData.lectureId > 0}"> 
+            <tr>
+                <td></td>
+                <td>
+                <table>
+                <tr>
+                <td><input type="submit" th:value="#{save}" /></td>
+                <td><div th:if="${formData.lectureId > 0}"> 
                 <input type="button" th:value="#{delete}"
                 th:data-id="${formData.lectureId}"
                 th:data-action="@{/lecture/delete/}"
                 th:data-msg="#{confirm.delete_lecture}" 
                 onclick="return fnConfirmRedirectId(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));" />
                 </div></td>
-				</tr>
-				</table>
-				</td>
-			</tr>
-		</table>
+                </tr>
+                </table>
+                </td>
+            </tr>
+        </table>
+	   </td>
+	   <td style="width:25%;vertical-align: top;">
+	   <!-- manage resources -->
+	   <div id="lecture_resource_manager"></div>
+	   </td>
+	</tr>
+    </table>
 		<input type="hidden" th:field="*{chapterId}" name="chapterId" id="chapterId" />
 		<input type="hidden" th:field="*{lectureId}" name="lectureId" id="lectureId" />
-	</form>
 
 	<th:block th:insert="~{pagefragments.html :: footer}">
 	</th:block>
+	<script type="text/javascript">
+	 CKEDITOR.replace( 'lecture_content' );
+    </script>
+    <script type="text/javascript">
+    var resourceManager = new ResourceManager('lecture_resource_manager', "[[@{/uploadservice/uploadimage/lecture}]]", {'lectureId' : "[[*{lectureId}]]"});
+    </script>
+    </form>
 </body>
 </html>

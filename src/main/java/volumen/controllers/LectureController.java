@@ -68,6 +68,7 @@ public class LectureController extends BaseController {
 	public ModelAndView getAdd(@PathVariable("chapterId") Long chapterId) {
 		Chapter chapter = findChapterOrThrow(chapterId);
 		Course course = getCourseOrThrow(chapter);
+		CourseCategory category = getCategoryOrThrow(course);
 
 		var formData = new AddLectureForm();
 		formData.setChapterId(chapter.getId());
@@ -79,6 +80,7 @@ public class LectureController extends BaseController {
 		model.addObject("formData", formData);
 		model.addObject("pageTitle", getMessage("lecture.page_title_add"));
 		model.addObject("course", course);
+		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
 	}
 
@@ -91,6 +93,7 @@ public class LectureController extends BaseController {
 		var chapterId = formData.getChapterId();
 		Chapter chapter = findChapterOrThrow(chapterId);
 		Course course = getCourseOrThrow(chapter);
+		CourseCategory category = getCategoryOrThrow(course);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			model.addAttribute("chapters", course.getChapters());
 			model.addAttribute("chapter", chapter);
@@ -98,6 +101,7 @@ public class LectureController extends BaseController {
 			model.addAttribute("pageTitle", getMessage("lecture.page_title_add"));
 			model.addAttribute("course", course);
 			model.addAttribute("requiredError", getMessage("error.lecture.name_required"));
+			model.addAttribute("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 			return VIEW_LECTURE_ADD;
 		}
 		Lecture newLecture = formData.toLecture(chapterRepo);
@@ -110,6 +114,7 @@ public class LectureController extends BaseController {
 		Lecture lecture = findLectureOrThrow(id);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
+		CourseCategory category = getCategoryOrThrow(course);
 		
 		var formData = new AddLectureForm();
 		formData.setChapterId(chapter.getId());
@@ -125,6 +130,7 @@ public class LectureController extends BaseController {
 		model.addObject("chapter", chapter);
 		model.addObject("chapters", course.getChapters());
 		model.addObject("course", course);
+		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
 	}
 
@@ -134,14 +140,16 @@ public class LectureController extends BaseController {
 		Lecture lecture = findLectureOrThrow(id);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
+		CourseCategory category = getCategoryOrThrow(course);
 		
 		if (null == formData.getName() || formData.getName().isBlank()) {
-			model.addAttribute("pageTitle", getMessage("unit.page_title_edit"));
+			model.addAttribute("pageTitle", getMessage("lecture.page_title_edit"));
 			model.addAttribute("formData", formData);
 			model.addAttribute("chapters", course.getChapters());
 			model.addAttribute("chapter", chapter);
 			model.addAttribute("course", course);
-			model.addAttribute("requiredError", getMessage("error.unit.name_required"));
+			model.addAttribute("requiredError", getMessage("error.lecture.name_required"));
+			model.addAttribute("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 			return VIEW_LECTURE_ADD;
 		}
 		if (formData.getSequenceNumber() == null)

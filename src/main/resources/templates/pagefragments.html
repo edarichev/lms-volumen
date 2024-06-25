@@ -19,6 +19,18 @@
 				</td>
 			</tr>
 			<tr>
+			 <td>
+			    <th:block th:if="${categoryPath != null}">
+			        <p>
+			        <a th:href="@{/category/}" th:text="#{category.all}">ALL CATEGORIES</a> /
+			        <span th:each="cp : ${categoryPath}">
+			            <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">CATEGORY NAME</a> /
+			        </span>
+			        </p>
+			    </th:block>
+			 </td>
+			</tr>
+			<tr>
 				<td style="padding:10px;">
 				
     </th:block>

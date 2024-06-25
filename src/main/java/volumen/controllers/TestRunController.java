@@ -19,6 +19,7 @@ import volumen.exceptions.LectureNotFoundException;
 import volumen.exceptions.TestNotFoundException;
 import volumen.model.Chapter;
 import volumen.model.Course;
+import volumen.model.CourseCategory;
 import volumen.model.Lecture;
 import volumen.model.LectureTest;
 import volumen.model.dto.AnswerDTO;
@@ -26,6 +27,7 @@ import volumen.model.dto.ExamResultsDTO;
 import volumen.model.dto.ExamSetDTO;
 import volumen.model.dto.QuestionResultDTO;
 import volumen.model.dto.TestQuestionDTO;
+import volumen.web.ui.CategoryTreeBuilder;
 
 @RequestMapping("/runtest")
 @Controller
@@ -46,6 +48,7 @@ public class TestRunController extends BaseController {
 		LectureTest test = getLectureTestOrThrow(lecture);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
+		CourseCategory category = getCategoryOrThrow(course);
 		
 		ExamSetDTO exam = makeExamSetDTO(lecture, test, chapter, course);
 		
@@ -64,6 +67,8 @@ public class TestRunController extends BaseController {
 		model.addObject("exam", exam);
 		model.addObject("isPostBack", false);
 		model.addObject("pageTitle", getMessage("test.running") + ": " + lecture.getName());
+		// path
+		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
 	}
 
@@ -97,6 +102,7 @@ public class TestRunController extends BaseController {
 		var lecture = getLectureOrThrow(test);
 		var chapter = getChapterOrThrow(lecture);
 		var course = getCourseOrThrow(chapter);
+		CourseCategory category = getCategoryOrThrow(course);
 		
 		ExamResultsDTO result = checkUserAnswers(request, test);
 		model.addObject("result", result);
@@ -106,6 +112,8 @@ public class TestRunController extends BaseController {
 		model.addObject("course", course);
 		model.addObject("isPostBack", true);
 		model.addObject("pageTitle", getMessage("test.running") + ": " + lecture.getName());
+		// path
+		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
 	}
 

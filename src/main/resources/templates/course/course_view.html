@@ -9,12 +9,6 @@
 <body>
     <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
     
-    <p>
-    <a th:href="@{/category/}" th:text="#{category.all}">ALL CATEGORIES</a> /
-    <span th:each="cp : ${categoryPath}">
-        <a th:href="@{/category/{id}(id=${cp.id})}" th:text="${cp.name}">COURSE NAME</a> /
-    </span>
-    </p>
 <table>
 <tr>
     <td>

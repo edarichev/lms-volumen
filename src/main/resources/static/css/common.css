@@ -70,3 +70,11 @@ body {
     height:50px;
     background: #f6b1b1;
 }
+
+#lecture_name_text_field {
+	width:90%;
+}
+
+#lecture_sequence_number_field {
+	width:120px;
+}

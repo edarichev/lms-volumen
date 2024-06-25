@@ -18,6 +18,7 @@ import volumen.exceptions.QuestionNotFoundException;
 import volumen.exceptions.TestNotFoundException;
 import volumen.model.Chapter;
 import volumen.model.Course;
+import volumen.model.CourseCategory;
 import volumen.model.Lecture;
 import volumen.model.LectureTest;
 import volumen.model.QuestionType;
@@ -25,6 +26,7 @@ import volumen.model.TestQuestion;
 import volumen.model.dto.AnswerDTO;
 import volumen.model.dto.IdNamePair;
 import volumen.model.dto.TestQuestionDTO;
+import volumen.web.ui.CategoryTreeBuilder;
 
 /**
  * Controller for editing questions
@@ -56,9 +58,10 @@ public class QuestionController extends BaseController {
 		Lecture lecture = getLectureOrThrow(test);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
+		CourseCategory category = getCategoryOrThrow(course);
 
 		EditQuestionForm formData = new EditQuestionForm();
-		formData.setQuestionTypes(buildQuestionTypes());
+		formData.setQuestionTypes(buildQuestionTypesList());
 		formData.setTestId(testId);
 		TestQuestionDTO questionDTO = new TestQuestionDTO(testId, null, null, QuestionType.SINGLE.name(),
 				new ArrayList<AnswerDTO>());
@@ -73,6 +76,7 @@ public class QuestionController extends BaseController {
 		model.addObject("testId", testId);
 		model.addObject("questionId", -1L);
 		model.addObject("lectureId", lecture.getId());
+		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
 	}
 
@@ -84,10 +88,29 @@ public class QuestionController extends BaseController {
 		Lecture lecture = getLectureOrThrow(test);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
-		ModelAndView model = new ModelAndView(VIEW_EDIT_QUESTION);
+		CourseCategory category = getCategoryOrThrow(course);
+		
 		EditQuestionForm formData = new EditQuestionForm();
-		formData.setQuestionTypes(buildQuestionTypes());
+		formData.setQuestionTypes(buildQuestionTypesList());
 		formData.setTestId(testId);
+		
+		TestQuestionDTO questionDTO = createTestQuestionDTO(id, question, testId);
+		formData.setQuestion(questionDTO);
+
+		ModelAndView model = new ModelAndView(VIEW_EDIT_QUESTION);
+		model.addObject("course", course);
+		model.addObject("chapter", chapter);
+		model.addObject("lecture", lecture);
+		model.addObject("test", test);
+		model.addObject("formData", formData);
+		model.addObject("testId", testId);
+		model.addObject("questionId", id);
+		model.addObject("lectureId", lecture.getId());
+		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		return model;
+	}
+
+	private TestQuestionDTO createTestQuestionDTO(Long questionId, TestQuestion question, Long testId) {
 		var answers = new ArrayList<AnswerDTO>();
 		for (var a : question.getAnswers()) {
 			answers.add(new AnswerDTO(a));
@@ -100,22 +123,12 @@ public class QuestionController extends BaseController {
 				return (int) (s0 - s1);
 			}
 		});
-		TestQuestionDTO questionDTO = new TestQuestionDTO(testId, id, question.getText(),
+		TestQuestionDTO questionDTO = new TestQuestionDTO(testId, questionId, question.getText(),
 				question.getQuestionType().name(), answers);
-		formData.setQuestion(questionDTO);
-
-		model.addObject("course", course);
-		model.addObject("chapter", chapter);
-		model.addObject("lecture", lecture);
-		model.addObject("test", test);
-		model.addObject("formData", formData);
-		model.addObject("testId", testId);
-		model.addObject("questionId", id);
-		model.addObject("lectureId", lecture.getId());
-		return model;
+		return questionDTO;
 	}
 
-	protected ArrayList<IdNamePair<String>> buildQuestionTypes() {
+	protected ArrayList<IdNamePair<String>> buildQuestionTypesList() {
 		ArrayList<IdNamePair<String>> types = new ArrayList<>();
 		types.add(new IdNamePair<String>(QuestionType.TEXT.name(), getMessage("question.type_name_text")));
 		types.add(new IdNamePair<String>(QuestionType.SINGLE.name(), getMessage("question.type_name_single")));
