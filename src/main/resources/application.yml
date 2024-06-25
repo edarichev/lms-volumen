@@ -18,7 +18,7 @@ spring:
   jpa : 
     show-sql: true
     hibernate :
-      ddl-auto : none # create
+      ddl-auto : update # create
     properties : 
       hibernate :
         dialect : org.hibernate.dialect.PostgreSQLDialect
@@ -26,7 +26,7 @@ spring:
         enable_lazy_load_no_trans : true
   web : 
     resources :
-      static-locations : classpath:/resources
+      static-locations : classpath:/resources,file:./uploads
 # max file size
   servlet:
     multipart:

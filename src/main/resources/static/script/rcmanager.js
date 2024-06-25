@@ -8,6 +8,21 @@ class ResourceManager {
     constructor(containerId, uploadService, params) {
         this.containerId = containerId;
         this.uploadServiceURL = uploadService;
+        
+        /**
+         * Добавляет только что загруженную картинку в список
+         */
+        this.addSingleImageData = function(response) {
+            var row = this.table.insertRow(1);
+            var cell = row.insertCell();
+            cell.colSpan = 3;
+            
+            var img = document.createElement('img');
+            img.src = response.uri;
+            img.style.maxWidth = '100px';
+            img.style.maxHeight = '100px';
+            cell.appendChild(img);
+        }
 
         this.buildFrame = function() {
             // frame
@@ -104,7 +119,7 @@ class ResourceManager {
                     if (!(xhr.status >= 200 && xhr.status < 300)) { // OK 200 or 201 CREATED
                         this.rcManager.log.textContent = ("Error " + xhr.status + " " + xhr.statusText);
                     } else {//ok
-                        alert(xhr.responseText);
+                        this.rcManager.addSingleImageData(JSON.parse(xhr.responseText));
                     }
                 }
 
@@ -119,7 +134,6 @@ class ResourceManager {
                 // Build the payload
                 const fileData = new FormData();
                 fileData.append("file", this.fileUpload.files[0]);
-                alert(params['lectureId']);
                 if (params !== undefined) {
                     if (params['lectureId'] !== undefined) {
                         fileData.append('lectureId', Number.parseInt(params['lectureId']));

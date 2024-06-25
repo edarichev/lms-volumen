@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FileResponse {
+public class ContentItemResponse {
 	private String name;
 	private String uri;
 	private String type;
