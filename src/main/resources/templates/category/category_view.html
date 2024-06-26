@@ -10,32 +10,38 @@
     <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
     
     
-    <h1 th:text="${category.name}"></h1>
-
-    <div><th:block th:text="${category.description}" /> </div>
-
-    <table>
-    <tr>
-    <td>
-        <a th:href="@{/category/add}" th:text="#{category.add}"></a>
+<table style="width:100%; height: 100%;">
+<tr>
+    <td valign="top" style="width:90%;">
+	    <!-- CONTENT -->
+	    <h1 th:text="${category.name}"></h1>
+	
+	    <div th:utext="${category.description}"></div>
+	    <!-- existing categories -->
+	    
+	    <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
+	    
+	    <!-- courses -->
+	    
+	    <h2 th:if="${courses != null && courses.size() > 0}" th:text="#{category.courses_in_this_category}"></h2>
+	    
+	    <th:block th:each="c : ${courses}">
+	        <h3><a th:href="@{/course/{id}(id=${c.id})}" th:text="${c.name}"></a></h3>
+	        <div th:utext="${c.description}"></div>
+	    </th:block>
     </td>
-    <td>
-        <a th:href="@{/category/edit/{id}(id=${category.id})}" th:text="#{category.edit}"></a>
+    <td valign="top">
+        <div id="page-management-menu">
+        <p><a th:href="@{/category/add}" th:text="#{category.add}"></a></p>
+        <p><a th:href="@{/category/edit/{id}(id=${category.id})}" th:text="#{category.edit}"></a></p>
+        <p><a th:href="@{/course/add/{categoryId}(categoryId=${category.id})}" th:text="#{course.create}">ADD COURSE</a></p>
+        </div>
     </td>
-    </tr>
-    </table>
+</tr>
+</table>
     
     
-    <!-- existing categories -->
-    
-    <section th:insert="~{@{categorytreefragment} :: category}" th:with="maincategories=${categories}"></section>
-    
-    <!-- courses -->
-    <a th:href="@{/course/add/{categoryId}(categoryId=${category.id})}" th:text="#{course.create}">ADD COURSE</a>
-    <h2 th:if="${courses != null && courses.size() > 0}" th:text="#{category.courses_in_this_category}"></h2>
-    
-    <p th:each="c : ${courses}"><a th:href="@{/course/{id}(id=${c.id})}" th:text="${c.name}"></a></p>
-    
+
     
 	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>

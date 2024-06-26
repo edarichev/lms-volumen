@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContentItemResponse {
+	private Long id;
 	private String name;
 	private String uri;
 	private String type;

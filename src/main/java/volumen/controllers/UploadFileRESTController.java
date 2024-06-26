@@ -7,7 +7,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,14 +43,19 @@ public class UploadFileRESTController extends BaseController {
 	@Autowired
 	private LecturesRepository lectureRepo;
 
-	@PostMapping(path =  "/uploadimage", consumes = {"*/*"}, produces = "application/json")
 	@ResponseBody
-	public ContentItemResponse uploadFile(@RequestParam(name = "file", required = true) MultipartFile file) {
-		String name = storageService.store(file);
-
-		String uri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/download/").path(name).toUriString();
-
-		return new ContentItemResponse(name, uri, file.getContentType(), file.getSize());
+	@GetMapping("/deleteimage/{imageId}")
+	public ResponseEntity<Void> deleteFile(@PathVariable("imageId") Long imageId) {
+		ContentItem item = contentItemRepository.findById(imageId).orElse(null);
+		if (item != null) {
+			Lecture lecture = item.getLecture();
+			Long lectureId = lecture.getId();
+			contentItemRepository.delete(item);
+			String prefix = "files/lecture/" + lectureId;
+			storageService.remove(item.getRelativePath());
+			System.out.println("deleted");
+		}
+		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
 	@PostMapping(path =  "/uploadimage/lecture", consumes = {"multipart/form-data"}, produces = "application/json")
@@ -74,13 +83,14 @@ public class UploadFileRESTController extends BaseController {
 		// see application.yml: static-locations
 		String uri = ServletUriComponentsBuilder.fromCurrentContextPath().path(relativePath.toString()).toUriString();
 
-		return new ContentItemResponse(name, uri, file.getContentType(), file.getSize());
+		return new ContentItemResponse(contentItem.getId(), name, uri, file.getContentType(), file.getSize());
 	}
 
-	@PostMapping("/upload-multiple-files")
+	@PostMapping("/upload-multiple-files/lecture")
 	@ResponseBody
-	public List<ContentItemResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-		return Arrays.stream(files).map(file -> uploadFile(file)).collect(Collectors.toList());
+	public List<ContentItemResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files,
+			 Long lectureId) {
+		return Arrays.stream(files).map(file -> uploadFileForLecture(file, lectureId)).collect(Collectors.toList());
 	}
 	
 	private Lecture findLectureOrThrow(Long lectureId) {

@@ -5,23 +5,56 @@
 class ResourceManager {
 
 
-    constructor(containerId, uploadService, params) {
+    constructor(containerId, params) {
         this.containerId = containerId;
-        this.uploadServiceURL = uploadService;
+        this.uploadServiceURL = params['uploadService'];
+        this.deleteServiceURL = params['deleteService'];
         
         /**
          * Добавляет только что загруженную картинку в список
          */
-        this.addSingleImageData = function(response) {
-            var row = this.table.insertRow(1);
-            var cell = row.insertCell();
-            cell.colSpan = 3;
-            
+        this.addSingleImageData = function(jsonObject) {
+            var cell = this.table.rows[2].cells[0];
+            var div = document.createElement('div');
+            div.style.maxWidth = '100px';
+            div.style.maxHeight = '100px';
+            div.style.margin = '5px';
+            div.style.padding = '5px';
+            div.style.border = '1px black dotted';
+            div.style.textAlign = 'center';
+            div.style.verticalAlign = 'middle';
+            div.style.float = 'left';
             var img = document.createElement('img');
-            img.src = response.uri;
-            img.style.maxWidth = '100px';
-            img.style.maxHeight = '100px';
-            cell.appendChild(img);
+            img.src = jsonObject.uri;
+            img.style.maxWidth = '90px';
+            img.style.maxHeight = '90px';
+            img.style.margin = '0px';
+            div.appendChild(img);
+            var br = document.createElement('br');
+            div.appendChild(br);
+            var a = document.createElement('a');
+            a.innerText = 'Удалить';
+            a.href = 'javascript:void(0);';
+            a.imageId = jsonObject.id;
+            a.rcManager = this;
+            a.onclick = function() {
+                // call delete image action
+                const xhr = new XMLHttpRequest();
+                xhr.imageContainer = this.parentNode; 
+                xhr.rcManager = this.rcManager;
+                xhr.onload = function() {
+                    if (!(xhr.status >= 200 && xhr.status < 300)) { // OK 200 or 201 CREATED
+                        this.rcManager.log.textContent = ("Error " + xhr.status + " " + xhr.statusText);
+                    } else { // ok, simple remove parent from container
+                        this.imageContainer.remove();
+                        this.rcManager.log.textContent = 'Removed';
+                    }
+                }
+                xhr.open('GET', this.rcManager.deleteServiceURL + "/" + this.imageId);
+                xhr.send();
+            }
+            div.appendChild(a);
+            cell.insertAdjacentElement('afterbegin', div);
         }
 
         this.buildFrame = function() {
@@ -62,6 +95,11 @@ class ResourceManager {
             this.log = document.createElement('span');
             cellProgress.appendChild(this.progressBar);
             cellOutput.appendChild(this.log);
+            // for images
+            var row = this.table.insertRow(2);
+            var cell = row.insertCell();
+            cell.colSpan = 3;
+
 
             this.fileUpload.rcManager = this;
             // source: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestUpload

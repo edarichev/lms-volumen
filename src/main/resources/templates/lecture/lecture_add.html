@@ -92,7 +92,12 @@
 	 CKEDITOR.replace( 'lecture_content' );
     </script>
     <script type="text/javascript">
-    var resourceManager = new ResourceManager('lecture_resource_manager', "[[@{/uploadservice/uploadimage/lecture}]]", {'lectureId' : "[[*{lectureId}]]"});
+    var resourceManager = new ResourceManager('lecture_resource_manager', {
+    	'lectureId' : "[[*{lectureId}]]",
+    	'uploadService' : "[[@{/uploadservice/uploadimage/lecture}]]",
+    	'deleteService' : "[[@{/uploadservice/deleteimage}]]"
+    	}
+    );
     </script>
     </form>
 </body>

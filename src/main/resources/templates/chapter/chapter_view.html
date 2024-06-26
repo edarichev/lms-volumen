@@ -8,22 +8,12 @@
 </head>
 <body>
     <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
-    
+<table style="width:100%; height: 100%;">
+<tr>
+    <td valign="top" style="width:90%;">
+    <!-- CONTENT -->
     <h1><a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a> </h1>
 
-<table>
-<tr>
-    <td>
-    <p><a th:href="@{/course/edit/{id}(id=${course.id})}" th:text="#{course.edit}">EDIT COURSE</a></p>
-    <p><a th:href="@{/unit/add/{id}(id=${course.id})}" th:text="#{unit.create}"></a></p>
-    <p><a th:href="@{/unit/edit/{id}(id=${chapter.id})}" th:text="#{chapter.edit}">EDIT CHAPTER</a></p>
-    <p><a th:href="@{/lecture/add/{id}(id=${chapter.id})}" th:text="#{lecture.add}">ADD LECTURE</a></p>
-    </td>
-</tr>
-</table>    
-    
-    
-    
     <h2 th:text="${chapter.name}"></h2>
 
     <div><th:block th:utext="${chapter.description}" /> </div>
@@ -32,6 +22,18 @@
         <a th:href="@{/lecture/{id}(id=${lecture.id})}" th:text="${lecture.name}">LECTURE NAME</a> 
     </p>
     
+    </td>
+    <td valign="top">
+        <div id="page-management-menu">
+	        <p style="white-space:nowrap;"><b th:text="#{header.content_management}"></b></p>
+		    <p><a th:href="@{/course/edit/{id}(id=${course.id})}" th:text="#{course.edit}">EDIT COURSE</a></p>
+		    <p><a th:href="@{/unit/add/{id}(id=${course.id})}" th:text="#{unit.create}"></a></p>
+		    <p><a th:href="@{/unit/edit/{id}(id=${chapter.id})}" th:text="#{chapter.edit}">EDIT CHAPTER</a></p>
+		    <p><a th:href="@{/lecture/add/{id}(id=${chapter.id})}" th:text="#{lecture.add}">ADD LECTURE</a></p>
+	    </div>
+    </td>
+</tr>
+</table>    
     <th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>
 </html>

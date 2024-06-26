@@ -45,6 +45,7 @@ body {
 	border-width: 1px;
 	border-color: darkgray;
 	padding: 3px;
+	margin:10px;
 }
 
 .run-test-container {
