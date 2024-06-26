@@ -83,3 +83,13 @@ body {
 #lecture_resource_manager {
 	margin:10px;
 }
+
+#lecture_header_block {
+	width:100%;
+	background-color: rgb(255, 234, 220);
+	border: 1px black solid;
+}
+
+#lecture_header_block td {
+	padding-left: 10px;
+}

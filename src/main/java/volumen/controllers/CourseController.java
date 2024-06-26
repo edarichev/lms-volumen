@@ -36,13 +36,7 @@ public class CourseController extends BaseController {
 	public ModelAndView getCourse(@PathVariable("id") Long id) {
 		var course = findCourseOrThrow(id);
 		var category = getCategoryOrThrow(course);
-		ArrayList<Chapter> chapters = course.getChapters().stream()
-				.sorted((k1, k2) -> {
-					Long n1 = k1.getSequenceNumber() == null ? 0 : k1.getSequenceNumber();
-					Long n2 = k2.getSequenceNumber() == null ? 0 : k2.getSequenceNumber();
-					return (int)(n1 - n2);
-				})
-				.collect(Collectors.toCollection(ArrayList<Chapter>::new));
+		ArrayList<Chapter> chapters = getChaptersOfCourse(course);
 
 		ModelAndView model = new ModelAndView(VIEW_SELECTED_COURSE);
 		model.addObject("categories", buildCategoryListForSelectElement(false, INDENT));

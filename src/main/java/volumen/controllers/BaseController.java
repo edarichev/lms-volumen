@@ -2,6 +2,7 @@ package volumen.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -135,4 +136,16 @@ public class BaseController {
 			throw new TestNotFoundException();
 		return test;
 	}
+
+	protected ArrayList<Chapter> getChaptersOfCourse(Course course) {
+		ArrayList<Chapter> chapters = course.getChapters().stream()
+				.sorted((k1, k2) -> {
+					Long n1 = k1.getSequenceNumber() == null ? 0 : k1.getSequenceNumber();
+					Long n2 = k2.getSequenceNumber() == null ? 0 : k2.getSequenceNumber();
+					return (int)(n1 - n2);
+				})
+				.collect(Collectors.toCollection(ArrayList<Chapter>::new));
+		return chapters;
+	}
+
 }

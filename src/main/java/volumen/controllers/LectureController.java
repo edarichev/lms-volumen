@@ -1,5 +1,7 @@
 package volumen.controllers;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,12 +50,14 @@ public class LectureController extends BaseController {
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
 		CourseCategory category = getCategoryOrThrow(course);
+		ArrayList<Chapter> chapters = getChaptersOfCourse(course);
 		
 		ModelAndView model = new ModelAndView(VIEW_SELECTED_LECTURE);
 		model.addObject("course", course);
 		model.addObject("chapter", chapter);
 		model.addObject("lecture", lecture);
 		model.addObject("lectureContent", lectureRepo.getLectureContent(id));
+		model.addObject("chapters", chapters);
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
