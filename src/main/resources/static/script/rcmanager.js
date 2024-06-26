@@ -9,6 +9,7 @@ class ResourceManager {
         this.containerId = containerId;
         this.uploadServiceURL = params['uploadService'];
         this.deleteServiceURL = params['deleteService'];
+        this.loadListServiceURL = params['loadListService'];
         
         /**
          * Добавляет только что загруженную картинку в список
@@ -38,6 +39,8 @@ class ResourceManager {
             a.imageId = jsonObject.id;
             a.rcManager = this;
             a.onclick = function() {
+                if (!confirm('Удалить эту картинку?'))
+                    return;
                 // call delete image action
                 const xhr = new XMLHttpRequest();
                 xhr.imageContainer = this.parentNode; 
@@ -55,6 +58,29 @@ class ResourceManager {
             }
             div.appendChild(a);
             cell.insertAdjacentElement('afterbegin', div);
+        }
+        
+        this.loadImageList = function(jsonObjects) {
+            var cell = this.table.rows[2].cells[0];
+            cell.innerHTML = ""; // clear all
+            for (var i = 0; i < jsonObjects.length; ++i) {
+                var o = jsonObjects[i];
+                this.addSingleImageData(o);
+            }
+        }
+        
+        this.beginLoadImageList = function() {
+            const xhr = new XMLHttpRequest();
+            xhr.rcManager = this;
+            xhr.onload = function() {
+                if (!(xhr.status >= 200 && xhr.status < 300)) { // OK 200 or 201 CREATED
+                    this.rcManager.log.textContent = ("Error " + xhr.status + " " + xhr.statusText);
+                } else { // ok, simple remove parent from container
+                    this.rcManager.loadImageList(JSON.parse(xhr.responseText));
+                }
+            }
+            xhr.open('GET', this.loadListServiceURL + "/" + Number.parseInt(params['lectureId']));
+            xhr.send();
         }
 
         this.buildFrame = function() {
@@ -87,6 +113,7 @@ class ResourceManager {
             this.btnAbort = document.createElement('input');
             this.btnAbort.type = 'button';
             this.btnAbort.value = 'Abort';
+            this.btnAbort.disabled = true;
             cellAbort.appendChild(this.btnAbort);
 
             var outputRow = this.table.insertRow();
@@ -140,6 +167,10 @@ class ResourceManager {
                         this.log.textContent = "Upload finished.";
                     }
                     this.btnAbort.disabled = true;
+                    // to clear input field:
+                    this.fileUpload.value = null;
+                    this.fileUpload.type = "text";
+                    this.fileUpload.type = "file";
                 });
 
                 // In case of an error, an abort, or a timeout, we hide the progress bar
@@ -188,5 +219,6 @@ class ResourceManager {
         }
 
         this.buildFrame();
+        this.beginLoadImageList();
     }
 }

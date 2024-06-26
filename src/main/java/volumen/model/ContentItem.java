@@ -1,5 +1,7 @@
 package volumen.model;
 
+import java.util.Date;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,6 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,6 +46,13 @@ public class ContentItem {
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private ContentItemType itemType;
+	
+	@Nullable
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date uploadDate = new Date();
+	
+	@Nullable
+	private Long size;
 	
 	public ContentItem(String path, Course course, Lecture lecture, ContentItemType type) {
 		this.relativePath = path;

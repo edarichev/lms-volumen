@@ -32,7 +32,7 @@
         <a th:href="@{/lecture/{id}(id=${formData.lectureId})}" th:text="${formData.name}">LECTURE NAME</a>
         </p>
         
-        <table style="width:100%">
+        <table style="width:100%; margin:5px;">
             <tr>
                 <td style="width:300px;"><label th:text="#{lecture.name}"></label></td>
                 <td><input type="text" id="lecture_name_text_field" name="lecture_name_text_field" th:field="*{name}" />
@@ -51,7 +51,7 @@
             </tr>
             <tr>
                 <td><label th:text="#{lecture.description_optional}" for="lecture_description"></label></td>
-                <td><textarea style="width:100%;" id="lecture_description" name="lecture_description" th:field="*{description}"></textarea></td>
+                <td><textarea style="width:90%;" id="lecture_description" name="lecture_description" th:field="*{description}"></textarea></td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -95,7 +95,8 @@
     var resourceManager = new ResourceManager('lecture_resource_manager', {
     	'lectureId' : "[[*{lectureId}]]",
     	'uploadService' : "[[@{/uploadservice/uploadimage/lecture}]]",
-    	'deleteService' : "[[@{/uploadservice/deleteimage}]]"
+    	'deleteService' : "[[@{/uploadservice/deleteimage}]]",
+    	'loadListService' : "[[@{/uploadservice/getimages/lecture}]]",
     	}
     );
     </script>

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContentItemResponse {
+public class ContentItemDTO {
 	private Long id;
 	private String name;
 	private String uri;

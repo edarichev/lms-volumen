@@ -79,3 +79,7 @@ body {
 #lecture_sequence_number_field {
 	width:120px;
 }
+
+#lecture_resource_manager {
+	margin:10px;
+}
