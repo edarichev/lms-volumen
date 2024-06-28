@@ -31,7 +31,7 @@ public class CourseCategoryController extends BaseController {
 	String index(Model model) {
 		ArrayList<CategoryNode> categories = buildCategoriesTreeList();
 		model.addAttribute("categories", categories);
-		return VIEW_CATEGORY_HOME;
+		return "redirect:/"; // всё равно одно и то же
 	}
 
 	@GetMapping("/{id}")

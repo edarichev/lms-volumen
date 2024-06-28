@@ -4,10 +4,12 @@
 
 * Spring Boot 3
 * Spring Data JPA
+* Spring Security
 * PostgreSQL
 * ORM
 * JPQL
 * Thymeleaf
+* Интернационализация
 * REST контроллеры + JavaScript + XMLHttpRequest
 * Загрузка файлов через XMLHttpRequest/MultipartFile
 

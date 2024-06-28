@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Volumen - Register</title>
+<link rel="stylesheet" th:href="@{/styles.css}" />
+</head>
+<body>
+	<h1>Register</h1>
+
+	<form method="post" th:action="register" id="registerForm">
+	
+	<label for="username">Username: </label>
+	<input type="text" name="username" /><br/>
+	
+	<label for="password">Password: </label>
+	<input type="password" name="password" /><br/>
+	
+	<label for="confirm">Confirm password: </label>
+	<input type="password" name="confirm" /><br/>
+	
+	<label for="surname">Surname: </label>
+	<input type="text" name="surname" /><br/>
+	
+    <label for="firstName">First name: </label>
+    <input type="text" name="firstName" /><br/>
+
+    <label for="middleName">Middle name: </label>
+    <input type="text" name="middleName" /><br/>
+
+	<input type="submit" value="Register" />
+	</form>
+</body>
+</html>

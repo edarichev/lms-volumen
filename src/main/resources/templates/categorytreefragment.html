@@ -5,7 +5,7 @@
     <ul>
         <li th:each="cat : ${categories}">
             <a th:href="@{/category/{id}(id=${cat.value.id})}" th:text="${cat.value.name}">CATEGORY NAME</a>
-            &nbsp; &nbsp;<a th:href="@{/category/edit/{id}(id=${cat.value.id})}" th:text="#{edit}">EDIT</a>
+            <a th:href="@{/category/edit/{id}(id=${cat.value.id})}"><img th:alt="#{edit}" th:title="#{edit}" th:src="@{/static/images/edit.png}" /></a>
             <section th:insert="~{@{categorytreefragment} :: category}" th:with="categories=${cat.items}"></section>
         </li>
     </ul>
