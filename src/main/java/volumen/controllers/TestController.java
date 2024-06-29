@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import jakarta.annotation.security.RolesAllowed;
 import volumen.controllers.forms.EditTestForm;
 import volumen.data.LectureTestRepository;
 import volumen.data.LecturesRepository;
@@ -28,11 +29,10 @@ import volumen.model.TestQuestion;
 import volumen.web.ui.CategoryTreeBuilder;
 
 /**
- * Test controller
+ * Test controller: manage tests only, to run exam see TestRunController
  * 
  * /test/add/lectureId
  * /test/edit/id
- * /test/run/id
  * /test/delete/id
  */
 @Controller
@@ -58,6 +58,7 @@ public class TestController extends BaseController {
 	 * @param lectureId lecture of this test
 	 * @return redirect to edit page
 	 */
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/add/{lectureId}")
 	String getAdd(@PathVariable("lectureId") Long lectureId) {
 		Lecture lecture = findLectureOrThrow(lectureId);
@@ -93,6 +94,7 @@ public class TestController extends BaseController {
 		return test;
 	}
 	
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/edit/{id}")
 	ModelAndView getEdit(@PathVariable("id") Long id) {
 		// find and load main data of test
@@ -118,6 +120,7 @@ public class TestController extends BaseController {
 		return model;
 	}
 	
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping("/edit/{id}")
 	String postEdit(Model model, @ModelAttribute EditTestForm formData, Errors errors) {
 		// find and load main data of test
@@ -130,6 +133,7 @@ public class TestController extends BaseController {
 		model.addAttribute("lecture", lecture);
 		model.addAttribute("chapter", chapter);
 		model.addAttribute("course", course);
+		model.addAttribute("questions", getTestQuestions(test));
 		this.addRoleAttributes(model);
 		// path
 		model.addAttribute("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
@@ -158,6 +162,7 @@ public class TestController extends BaseController {
 		return VIEW_EDIT_TEST;
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/delete/{id}")
 	String getDelete(@PathVariable("id") Long id) {
 		LectureTest test = findTestOrThrow(id);

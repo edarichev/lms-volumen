@@ -7,74 +7,92 @@
 <title th:text="#{question.edit_page_title}"></title>
 <th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
 <script type="text/javascript" th:src="@{/static/script/answersbuilder.js}"></script>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+<script type="text/javascript" th:src="@{/static/script/rcmanager.js}"></script>
 <link th:href="@{/static/css/answersbuilder.css}" rel="stylesheet" /> 
 </head>
 <body>
 	<th:block th:insert="~{pagefragments.html :: header}">
 	</th:block>
-	<h1 th:text="#{question.edit_page_title}"></h1>
+	<h3 th:text="#{question.edit_page_title}"></h3>
 	<form method="post" th:object="${formData}" id="add_lecture_form">
-	   
-		<p><span th:text="#{course}"></span>:
-		<a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>
-		
-		<p><span th:text="#{unit}"></span>:
-        <a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="${chapter.name}"></a></p>
-        
-        <p><span th:text="#{lecture}"></span>:
-        <a th:href="@{/lecture/{id}(id=${lecture.id})}" th:text="${lecture.name}"></a></p>
-        
-        <p><a th:href="@{/test/edit/{id}(id=${testId})}" th:text="#{lecture.edit_test}">EDIT TEST</a></p>
-        
-		<table>
-			<tr>
-				<td><label th:text="#{question.text_of_question}"></label></td>
-				<td>
-				<textarea id="text_of_question" name="text_of_question" th:field="*{question.text}"></textarea>
-				</td>
-			</tr>
-			<tr>
-			     <td><label th:text="#{question.question_type}"></label></td>
-			     <td>
-			     <select id="question_type" th:field="*{question.questionType}">
-			     <option th:each="qt : *{questionTypes}" th:value="${qt.id}" th:text="${qt.name}">QUESTION TYPE</option>
-			     </select>
-			     </td>
-			</tr>
-			<tr>
-			<td colspan="2">
-			
-			</td>
-			</tr>
- 			<tr>
-				<td></td>
-				<td>
-				<table>
-				<tr>
-				<!-- save through REST service -->
-				<td><input type="button" th:value="#{save}" onclick="saveDTO();" />
-				    
-				</td>
-				<td><div th:if="${questionId > 0}"> 
-                <input type="button" th:value="#{delete}"
-                th:data-id="${questionId}"
-                th:data-action="@{/questionservice/delete/}"
-                th:data-msg="#{confirm.delete_question}" 
-                onclick="return fnConfirmRedirectId(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));" />
-                </div></td>
-				</tr>
-				
-				</table>
-				</td>
-			</tr>
-			<tr>
-			    <td>&nbsp;</td>
-                <td>
-                    <p id="http_error_message" class="error"></p>
-                    <p id="status_message" class="status-message"></p>
-                </td>
-            </tr>
-		</table>
+	   <table style="width:100%">
+	       <tr>
+	       <td valign="top">
+		       <table cellspacing="3">
+		           <tr>
+		               <td><span th:text="#{course}"></span>:</td>
+		               <td><a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></td>
+		           </tr>
+		           <tr>
+		               <td><span th:text="#{unit}"></span>:</td>
+		               <td><a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="${chapter.name}"></a></td>
+		           </tr>
+		           <tr>
+		               <td><span th:text="#{lecture}"></span>:</td>
+		               <td><a th:href="@{/lecture/{id}(id=${lecture.id})}" th:text="${lecture.name}"></a></td>
+		           </tr>
+		           <tr>
+		               <td><span th:text="#{test}"></span>:</td>
+		               <td><a th:href="@{/test/edit/{id}(id=${testId})}" th:text="#{lecture.edit_test}">EDIT TEST</a></td>
+		           </tr>
+		            <tr>
+		                <td><label th:text="#{question.text_of_question}"></label></td>
+		                <td>
+		                <textarea id="text_of_question" name="text_of_question" th:field="*{question.text}"></textarea>
+		                </td>
+		            </tr>
+		            <tr>
+		                 <td><label th:text="#{question.question_type}"></label></td>
+		                 <td>
+		                 <select id="question_type" th:field="*{question.questionType}">
+		                 <option th:each="qt : *{questionTypes}" th:value="${qt.id}" th:text="${qt.name}">QUESTION TYPE</option>
+		                 </select>
+		                 </td>
+		            </tr>
+		            <tr>
+		            <td colspan="2">
+		            
+		            </td>
+		            </tr>
+		            <tr>
+		                <td></td>
+		                <td>
+		                <table>
+		                <tr>
+		                <!-- save through REST service -->
+		                <td><input type="button" th:value="#{save}" onclick="saveDTO();" />
+		                    
+		                </td>
+		                <td><div th:if="${questionId > 0}"> 
+		                <input type="button" th:value="#{delete}"
+		                th:data-id="${questionId}"
+		                th:data-action="@{/questionservice/delete/}"
+		                th:data-msg="#{confirm.delete_question}" 
+		                onclick="return fnConfirmRedirectId(this.getAttribute('data-msg'), this.getAttribute('data-action'), this.getAttribute('data-id'));" />
+		                </div></td>
+		                </tr>
+		                
+		                </table>
+		                </td>
+		            </tr>
+		            <tr>
+		                <td>&nbsp;</td>
+		                <td>
+		                    <p id="http_error_message" class="error"></p>
+		                    <p id="status_message" class="status-message"></p>
+		                </td>
+		            </tr>
+		        </table>
+	       </td>
+		        <td style="width:25%;vertical-align: top;">
+			       <!-- manage resources -->
+			       <th:block th:if="${formData.lectureId > 0}">
+			       <div id="lecture_resource_manager"></div>
+			       </th:block>
+		       </td>
+   	       </tr>
+	   </table>
 		<input type="hidden" th:value="${questionId}" name="questionId" id="questionId" />
 		<input type="hidden" th:value="${testId}" name="testId" id="testId" />
 		<input type="hidden" th:value="${lectureId}" name="lectureId" id="lectureId" />
@@ -171,6 +189,20 @@ function saveDTO() {
 	};
 }
 </script>
+
+    <script type="text/javascript"  th:if="${formData.lectureId > 0}">
+    var resourceManager = new ResourceManager('lecture_resource_manager', {
+        'lectureId' : "[[*{lectureId}]]",
+        'uploadService' : "[[@{/uploadservice/uploadimage/lecture}]]",
+        'deleteService' : "[[@{/uploadservice/deleteimage}]]",
+        'loadListService' : "[[@{/uploadservice/getimages/lecture}]]",
+        }
+    );
+    </script>
+    <script type="text/javascript">
+     CKEDITOR.replace('text_of_question');
+    </script>
+
     </form>
 
 	<th:block th:insert="~{pagefragments.html :: footer}">

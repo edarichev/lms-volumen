@@ -23,8 +23,6 @@ import volumen.web.ui.CategoryTreeBuilder;
 @RequestMapping("/category")
 public class CourseCategoryController extends BaseController {
 
-	private static final String VIEW_CATEGORY_ADD = "category/category_add";
-	private static final String VIEW_CATEGORY_HOME = "category/category_home";
 	private static final String VIEW_SELECTED_CATEGORY = "category/category_view";
 	private static final String VIEW_EDIT_CATEGORY = "category/category_add";
 
@@ -53,7 +51,7 @@ public class CourseCategoryController extends BaseController {
 	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("add")
 	ModelAndView getAdd() {
-		ModelAndView model = new ModelAndView(VIEW_CATEGORY_ADD);
+		ModelAndView model = new ModelAndView(VIEW_EDIT_CATEGORY);
 		var form = new AddCourseCategoryForm();
 		model.addObject("formData", form);
 		model.addObject("categories", buildCategoryListForSelectElement(true, INDENT));
@@ -70,12 +68,12 @@ public class CourseCategoryController extends BaseController {
 		model.addAttribute("pageTitle", getMessage("category.page_title_add"));
 		this.addRoleAttributes(model);
 		if (errors.hasErrors()) {
-			return VIEW_CATEGORY_ADD;
+			return VIEW_EDIT_CATEGORY;
 		}
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			String requiredError = getMessage("error.category.name_required");
 			model.addAttribute("requiredError", requiredError);
-			return VIEW_CATEGORY_ADD;
+			return VIEW_EDIT_CATEGORY;
 		}
 		CourseCategory newCategory = formData.toCategory(categoryRepo);
 		categoryRepo.save(newCategory);

@@ -10,6 +10,7 @@ import volumen.model.dto.TestQuestionDTO;
 public class EditQuestionForm {
 	private Long testId;
 	private Long questionId;
+	private Long lectureId;
 	
 	private TestQuestionDTO question;
 	

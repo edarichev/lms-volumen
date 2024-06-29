@@ -16,6 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -59,6 +60,6 @@ public class Chapter {
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "chapter_id")
-	//@OrderColumn(name = "sequenceNumber")
+	@OrderBy("sequence_number")
 	private List<Lecture> lectures = new ArrayList<Lecture>();
 }

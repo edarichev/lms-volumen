@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import jakarta.annotation.security.RolesAllowed;
 import volumen.controllers.forms.AddChapterForm;
 import volumen.data.ChaptersRepository;
 import volumen.exceptions.ChapterNotFoundException;
@@ -56,6 +57,7 @@ public class ChapterController extends BaseController {
 		return chapterRepo.findById(id).orElseThrow(() -> new ChapterNotFoundException(id));
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/add/{courseId}")
 	public ModelAndView getAdd(@PathVariable("courseId") Long courseId) {
 		Course course = courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
@@ -72,6 +74,7 @@ public class ChapterController extends BaseController {
 		return model;
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping("/add/{courseId}")
 	public String getAdd(Model model, @ModelAttribute AddChapterForm formData, Errors errors) {
 		var courseId = formData.getCourseId();
@@ -92,6 +95,7 @@ public class ChapterController extends BaseController {
 		return "redirect:/course/" + formData.getCourseId();
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/edit/{id}")
 	public ModelAndView getEdit(@PathVariable("id") Long id) {
 		Chapter chapter = findChapterOrThrow(id);
@@ -112,6 +116,7 @@ public class ChapterController extends BaseController {
 		return model;
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping("/edit/{id}")
 	public String postEdit(Model model, @ModelAttribute AddChapterForm formData, Errors errors) {
 		Long id = formData.getChapterId();
@@ -135,6 +140,7 @@ public class ChapterController extends BaseController {
 		return "redirect:/unit/" + chapter.getId();
 	}
 	
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/delete/{id}")
 	public String getDelete(@PathVariable("id") Long id) {
 		Chapter chapter = findChapterOrThrow(id);

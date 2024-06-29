@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import jakarta.annotation.security.RolesAllowed;
 import volumen.ContentItemDTO;
 import volumen.StorageService;
 import volumen.data.ContentItemRepository;
@@ -44,12 +45,12 @@ public class UploadFileRESTController extends BaseController {
 	@Autowired
 	private LecturesRepository lectureRepo;
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@ResponseBody
 	@GetMapping("/deleteimage/{imageId}")
 	public ResponseEntity<Void> deleteFile(@PathVariable("imageId") Long imageId) {
 		ContentItem item = contentItemRepository.findById(imageId).orElse(null);
 		if (item != null) {
-			Lecture lecture = item.getLecture();
 			contentItemRepository.deleteById(imageId);
 			storageService.remove(item.getRelativePath());
 			System.out.println("deleted");
@@ -57,6 +58,7 @@ public class UploadFileRESTController extends BaseController {
 		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping(path = "/getimages/lecture/{lectureId}", produces = "application/json")
 	@ResponseBody
 	public List<ContentItemDTO> getFilesForLecture(@PathVariable("lectureId") Long lectureId) {
@@ -75,6 +77,7 @@ public class UploadFileRESTController extends BaseController {
 		return list;
 	}
 	
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping(path =  "/uploadimage/lecture", consumes = {"multipart/form-data"}, produces = "application/json")
 	@ResponseBody
 	public ContentItemDTO uploadFileForLecture(@RequestParam(name = "file", required = true) MultipartFile file,
@@ -123,10 +126,11 @@ public class UploadFileRESTController extends BaseController {
 		return fileName.substring(i);
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping("/upload-multiple-files/lecture")
 	@ResponseBody
 	public List<ContentItemDTO> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files,
-			 Long lectureId) {
+			@RequestParam(name = "lectureId", required = true) Long lectureId) {
 		return Arrays.stream(files).map(file -> uploadFileForLecture(file, lectureId)).collect(Collectors.toList());
 	}
 	

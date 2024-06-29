@@ -4,6 +4,22 @@
 <meta charset="UTF-8" />
 <link th:href="@{/static/css/common.css}" rel="stylesheet" />
 <script type="text/javascript" th:src="@{/static/script/common.js}"></script>
+<script lang="text/javascript">
+function changeLanguage(newLang) {
+	var url = window.location.href;
+	const newLangParam = 'lang=' + newLang;
+	const re = /lang=[a-z]+/gm;
+	if (re.test(url))
+		url = url.replace(re, newLangParam);
+	else {
+		if (url.includes('?'))
+			url += "&" + newLangParam;
+		else
+			url += '?' + newLangParam;
+	}
+	window.location.replace(url);
+}
+</script>
 </th:block>
 </head>
 <body>
@@ -13,16 +29,20 @@
 				<td><!-- top of page, logo, login/register-->
 					<table class="logobox">
 						<tr>
-							<td align="left" valign="middle"><a th:href="@{/}">Volumen LMS</a></td>
-							<td align="right" valign="top">
-							<th:block th:if="${user == null}">
-                            <a th:href="@{/login}" th:text="#{login}"></a>
-                            <a th:href="@{/register}" th:text="#{register}"></a>
-                            </th:block>
-							<th:block th:if="${user != null}">
-							<a th:href="@{/logout}" th:text="#{logout}"></a>
-							<a th:href="@{/userpage}" th:text="${user.username}"></a>
-							</th:block>
+							<td style="text-align:left;vertical-align: middle; width:90%;"><a th:href="@{/}">Volumen LMS</a></td>
+							<td style="text-align:right; vertical-align:top;white-space:nowrap;">
+							<a href="javascript:void(0);" onclick="return changeLanguage('ru');"><img th:src="@{/static/images/ru.png}" width="24" height="24" /></a>
+							<a href="javascript:void(0);" onclick="return changeLanguage('en');"><img th:src="@{/static/images/enus.png}" width="24" height="24" /></a>
+							</td>
+							<td style="text-align:right; vertical-align:top;white-space:nowrap;">
+								<th:block th:if="${user == null}">
+	                            <a th:href="@{/login}" th:text="#{login}"></a>
+	                            <a th:href="@{/register}" th:text="#{register}"></a>
+	                            </th:block>
+								<th:block th:if="${user != null}">
+								<a th:href="@{/logout}" th:text="#{logout}"></a>
+								<a th:href="@{/userpage}" th:text="${user.username}"></a>
+								</th:block>
 							</td>
 						</tr>
 					</table>

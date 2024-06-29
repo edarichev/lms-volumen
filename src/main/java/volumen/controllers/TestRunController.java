@@ -44,7 +44,7 @@ public class TestRunController extends BaseController {
 	// /runtest/11/22/33
 	@GetMapping("/lecture/{lectureId}")
 	ModelAndView getRunTest(@PathVariable("lectureId") Long lectureId) {
-		Lecture lecture = findLecture(lectureId);
+		Lecture lecture = findLectureOrThrow(lectureId);
 		LectureTest test = getLectureTestOrThrow(lecture);
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
@@ -99,7 +99,7 @@ public class TestRunController extends BaseController {
 	ModelAndView postRunTest(ModelAndView model, HttpServletRequest request, @ModelAttribute TestRunForm formData) {
 		model.setViewName(VIEW_RUN_FULL_TEST);
 		Long testId = formData.getTestId();
-		var test = findLectureTest(testId);
+		var test = findLectureTestOrThrow(testId);
 		var lecture = getLectureOrThrow(test);
 		var chapter = getChapterOrThrow(lecture);
 		var course = getCourseOrThrow(chapter);
@@ -182,11 +182,11 @@ public class TestRunController extends BaseController {
 		return result;
 	}
 
-	private Lecture findLecture(Long lectureId) {
+	private Lecture findLectureOrThrow(Long lectureId) {
 		return lectureRepo.findById(lectureId).orElseThrow(() -> new LectureNotFoundException(lectureId));
 	}
 	
-	private LectureTest findLectureTest(Long testId) {
+	private LectureTest findLectureTestOrThrow(Long testId) {
 		return testRepo.findById(testId).orElseThrow(() -> new TestNotFoundException(testId));
 	}
 }

@@ -12,11 +12,11 @@
 	</th:block>
 	<h1 th:text="${pageTitle}"></h1>
 	<form method="post" th:object="${formData}" id="add_course_form">
-	<a th:text="#{category.all}" th:href="@{/category}">ALL CATEGORIES</a>
 	   <span class="error" th:if="${#fields.hasErrors('*')}">ERRORS</span>
 		<ul th:if="${#fields.hasErrors('*')}">
 		  <li th:each="error : ${#fields.errors('*')}" th:text="${error}">ERROR</li>
 		</ul>
+		<p th:if="${formData.courseId > 0}"><a th:href="@{/course/{courseId}(courseId=${formData.courseId})}" th:text="${formData.name}"></a></p>
 		<table>
 			<tr>
 				<td><label th:text="#{course.name}"></label></td>

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.annotation.security.RolesAllowed;
 import volumen.data.AnswersRepository;
 import volumen.data.LectureTestRepository;
 import volumen.data.TestQuestionRepository;
@@ -40,6 +41,7 @@ public class QuestionRESTController {
 	@Autowired
 	AnswersRepository answersRepo;
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/delete/{id}")
 	String getDelete(@PathVariable("id") Long id) {
 		TestQuestion question = findQuestion(id);
@@ -53,6 +55,7 @@ public class QuestionRESTController {
 	}
 
 	// /questionservice/save
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping(path = "/save", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<TestQuestionDTO> saveQuestion(@RequestBody TestQuestionDTO questionDTO) throws Exception {
 		TestQuestionDTO savedDTO = saveTestQuestion(questionDTO);

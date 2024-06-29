@@ -1,6 +1,6 @@
 package volumen.controllers;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import jakarta.annotation.security.RolesAllowed;
 import volumen.controllers.forms.AddLectureForm;
 import volumen.data.ChaptersRepository;
 import volumen.data.LecturesRepository;
@@ -50,7 +51,7 @@ public class LectureController extends BaseController {
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
 		CourseCategory category = getCategoryOrThrow(course);
-		ArrayList<Chapter> chapters = getChaptersOfCourse(course);
+		List<Chapter> chapters = course.getChapters();
 		
 		ModelAndView model = new ModelAndView(VIEW_SELECTED_LECTURE);
 		model.addObject("course", course);
@@ -64,11 +65,7 @@ public class LectureController extends BaseController {
 		return model;
 	}
 
-	private Lecture findLectureOrThrow(Long id) {
-		return lectureRepo.findById(id).orElseThrow(() -> new LectureNotFoundException(id));
-	}
-	
-	
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/add/{chapterId}")
 	public ModelAndView getAdd(@PathVariable("chapterId") Long chapterId) {
 		Chapter chapter = findChapterOrThrow(chapterId);
@@ -90,10 +87,7 @@ public class LectureController extends BaseController {
 		return model;
 	}
 
-	private Chapter findChapterOrThrow(Long chapterId) {
-		return chapterRepo.findById(chapterId).orElseThrow(() -> new ChapterNotFoundException(chapterId));
-	}
-	
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping("/add/{chapterId}")
 	public String getAdd(Model model, @ModelAttribute AddLectureForm formData, Errors errors) {
 		var chapterId = formData.getChapterId();
@@ -117,6 +111,7 @@ public class LectureController extends BaseController {
 		return "redirect:/lecture/edit/" + lectureId;
 	}
 	
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/edit/{id}")
 	public ModelAndView getEdit(@PathVariable("id") Long id) {
 		Lecture lecture = findLectureOrThrow(id);
@@ -143,6 +138,7 @@ public class LectureController extends BaseController {
 		return model;
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping("/edit/{id}")
 	public String postEdit(Model model, @ModelAttribute AddLectureForm formData, Errors errors) {
 		Long id = formData.getLectureId();
@@ -169,9 +165,11 @@ public class LectureController extends BaseController {
 		lecture.setContent(formData.getContent());
 		lecture.setChapter(chapter);
 		lectureRepo.save(lecture);
-		return "redirect:/unit/" + chapter.getId();
+		// redirect-after-post
+		return "redirect:/lecture/edit/" + lecture.getId();
 	}
 	
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/delete/{id}")
 	public String getDelete(@PathVariable("id") Long id) {
 		Lecture lecture = findLectureOrThrow(id);
@@ -179,4 +177,13 @@ public class LectureController extends BaseController {
 		lectureRepo.delete(lecture);
 		return "redirect:/unit/" + chapter.getId();
 	}
+
+	private Lecture findLectureOrThrow(Long id) {
+		return lectureRepo.findById(id).orElseThrow(() -> new LectureNotFoundException(id));
+	}
+	
+	private Chapter findChapterOrThrow(Long chapterId) {
+		return chapterRepo.findById(chapterId).orElseThrow(() -> new ChapterNotFoundException(chapterId));
+	}
+	
 }

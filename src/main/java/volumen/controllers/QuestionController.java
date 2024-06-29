@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import jakarta.annotation.security.RolesAllowed;
 import volumen.controllers.forms.EditQuestionForm;
 import volumen.data.LectureTestRepository;
 import volumen.data.TestQuestionRepository;
@@ -52,6 +53,7 @@ public class QuestionController extends BaseController {
 		return "redirect:/category";
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/add/{testId}")
 	ModelAndView getAdd(@PathVariable("testId") Long testId) {
 		LectureTest test = findTestOrThrow(testId);
@@ -66,6 +68,7 @@ public class QuestionController extends BaseController {
 		TestQuestionDTO questionDTO = new TestQuestionDTO(testId, null, null, QuestionType.SINGLE.name(),
 				new ArrayList<AnswerDTO>());
 		formData.setQuestion(questionDTO);
+		formData.setLectureId(lecture.getId());
 
 		ModelAndView model = new ModelAndView(VIEW_QUESTION_ADD);
 		model.addObject("course", course);
@@ -81,6 +84,7 @@ public class QuestionController extends BaseController {
 		return model;
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/edit/{id}")
 	ModelAndView getEdit(@PathVariable("id") Long id) {
 		TestQuestion question = findQuestionOrThrow(id);
@@ -94,6 +98,7 @@ public class QuestionController extends BaseController {
 		EditQuestionForm formData = new EditQuestionForm();
 		formData.setQuestionTypes(buildQuestionTypesList());
 		formData.setTestId(testId);
+		formData.setLectureId(lecture.getId());
 		
 		TestQuestionDTO questionDTO = createTestQuestionDTO(id, question, testId);
 		formData.setQuestion(questionDTO);

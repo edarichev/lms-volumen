@@ -12,17 +12,19 @@
 
 	<h1 th:text="#{test.edit_page_title}"></h1>
 	<form method="post" th:object="${formData}" id="add_lecture_form">
-
-		<p><span th:text="#{course}"></span>:
-		<a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></p>
-		
-		<p><span th:text="#{unit}"></span>:
-        <a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="${chapter.name}"></a></p>
-        
-        <p><span th:text="#{lecture}"></span>:
-        <a th:href="@{/lecture/{id}(id=${lecture.id})}" th:text="${lecture.name}"></a></p>
-        
-		<table>
+		<table cellspacing="3">
+		    <tr>
+		      <td><span th:text="#{course}"></span>:</td>
+		      <td><a th:href="@{/course/{id}(id=${course.id})}" th:text="${course.name}"></a></td>
+		    </tr>
+            <tr>
+              <td><span th:text="#{unit}"></span>:</td>
+              <td><a th:href="@{/unit/{id}(id=${chapter.id})}" th:text="${chapter.name}"></a></td>
+            </tr>
+            <tr>
+              <td><span th:text="#{lecture}"></span>:</td>
+              <td><a th:href="@{/lecture/{id}(id=${lecture.id})}" th:text="${lecture.name}"></a></td>
+            </tr>
 			<tr>
 				<td><label th:text="#{test.attach_to_lecture}"></label></td>
 				<td>
@@ -63,7 +65,7 @@
 		<table style="padding:0px;width:100%;">
 		  <tr th:each="q : ${questions}">
 		  <td style="border-top:1px darkgray dashed;width:95%;">
-		  <p><b th:text="${q.text}"></b></p>
+		  <p th:text="${q.text}"></p>
 		  </td>
 		  <td style="text-align:center;vertical-align:middle;border-top:1px darkgray dashed;">
 		  <a th:href="@{/question/edit/{id}(id=${q.id})}" th:text="#{edit}">EDIT</a>
