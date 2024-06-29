@@ -6,9 +6,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.ModelAndView;
 
 import volumen.data.CourseCategoryRepository;
 import volumen.data.CourseRepository;
+import volumen.data.UsersRepository;
 import volumen.exceptions.CategoryNotFoundException;
 import volumen.exceptions.ChapterNotFoundException;
 import volumen.exceptions.CircularCategoryReferenceException;
@@ -29,11 +35,15 @@ public class BaseController {
 	
 	protected static final String INDENT = "\u00A0\u00A0";
 
+	protected static final String[] EDITOR_ROLES = {"ADMIN", "TEACHER"};
 	@Autowired
 	protected CourseCategoryRepository categoryRepo;
 	
 	@Autowired
 	protected CourseRepository courseRepo;
+	
+	@Autowired
+	protected UsersRepository usersRepo;
 
 	@Autowired
     protected MessageSource messageSource;
@@ -148,4 +158,29 @@ public class BaseController {
 		return chapters;
 	}
 
+	protected volumen.User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+		    String currentUserName = authentication.getName();
+		    return usersRepo.findByUsername(currentUserName);
+		}
+		return null;
+	}
+	
+	protected boolean isCurrentUserAllowEditResource() {
+		volumen.User user = getCurrentUser();
+		if (user == null)
+			return false;
+		return user.hasAnyRole(EDITOR_ROLES);
+	}
+	
+	protected void addRoleAttributes(ModelAndView model) {
+		model.addObject("user", this.getCurrentUser());
+		model.addObject("editCategoryEnabled", this.isCurrentUserAllowEditResource());
+	}
+	
+	protected void addRoleAttributes(Model model) {
+		model.addAttribute("user", this.getCurrentUser());
+		model.addAttribute("editCategoryEnabled", this.isCurrentUserAllowEditResource());
+	}
 }

@@ -1,5 +1,7 @@
 # LMS Volumen
 
+Учебное приложение на Spring Framework.
+
 Используются:
 
 * Spring Boot 3
@@ -10,7 +12,7 @@
 * JPQL
 * Thymeleaf
 * Интернационализация
-* REST контроллеры + JavaScript + XMLHttpRequest
+* REST контроллеры + динамические элементы с JavaScript + XMLHttpRequest
 * Загрузка файлов через XMLHttpRequest/MultipartFile
 
 

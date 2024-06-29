@@ -2,6 +2,9 @@ package volumen.security;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +16,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import volumen.data.UsersRepository;
 
@@ -43,9 +49,15 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		String [] editorRoles = {"TEACHER", "ADMIN"};
-		http.csrf((csrf) -> csrf // TODO: не хочу пока возиться, да и кому всё это надо
+		String [] allRoles = {"TEACHER", "ADMIN", "USER"};
+		http
+		.logout((logout)->logout.invalidateHttpSession(true).logoutSuccessUrl("/").deleteCookies("JSESSIONID"))
+		.rememberMe((rem) -> rem.key("remember-me").rememberMeCookieName(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY)
+				.tokenRepository(persistentTokenRepository()).tokenValiditySeconds(86400))
+		.csrf((csrf) -> csrf // TODO: пока упростим
                 .ignoringRequestMatchers("/**")
             ).authorizeHttpRequests(auth -> auth
+            	.requestMatchers("/userpage/**").authenticated()
 				.requestMatchers("/category/add/**").hasAnyAuthority(editorRoles)
 				.requestMatchers("/lecture/add/**").hasAnyAuthority(editorRoles)
 				.requestMatchers("/course/add/**").hasAnyAuthority(editorRoles)
@@ -68,4 +80,14 @@ public class SecurityConfig {
 				);
 		return http.build();
 	}
+	
+	@Autowired
+    DataSource dataSource;
+	
+	@Bean
+    PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepositoryImpl = new JdbcTokenRepositoryImpl();
+        tokenRepositoryImpl.setDataSource(dataSource);
+        return tokenRepositoryImpl;
+    }
 }

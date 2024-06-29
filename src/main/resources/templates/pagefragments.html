@@ -10,10 +10,20 @@
 	<th:block th:fragment="header">
 		<table class="mainframe">
 			<tr>
-				<td><!-- logo -->
+				<td><!-- top of page, logo, login/register-->
 					<table class="logobox">
 						<tr>
-							<td><a th:href="@{/}">Volumen LMS</a></td>
+							<td align="left" valign="middle"><a th:href="@{/}">Volumen LMS</a></td>
+							<td align="right" valign="top">
+							<th:block th:if="${user == null}">
+                            <a th:href="@{/login}" th:text="#{login}"></a>
+                            <a th:href="@{/register}" th:text="#{register}"></a>
+                            </th:block>
+							<th:block th:if="${user != null}">
+							<a th:href="@{/logout}" th:text="#{logout}"></a>
+							<a th:href="@{/userpage}" th:text="${user.username}"></a>
+							</th:block>
+							</td>
 						</tr>
 					</table>
 				</td>

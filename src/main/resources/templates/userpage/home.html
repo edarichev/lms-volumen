@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<title th:text="#{mainpage.title}"></title>
+<th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
+</head>
+<body>
+    <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
+    <h1>User area</h1>
+     
+	<th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
+</body>
+</html>

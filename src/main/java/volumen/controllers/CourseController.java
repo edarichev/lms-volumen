@@ -44,6 +44,7 @@ public class CourseController extends BaseController {
 		model.addObject("chapters", chapters);
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 
@@ -56,6 +57,7 @@ public class CourseController extends BaseController {
 		model.addObject("categories", buildCategoryListForSelectElement(false, INDENT));
 		model.addObject("formData", formData);
 		model.addObject("pageTitle", getMessage("course.page_title_add"));
+		this.addRoleAttributes(model);
 		return model;
 	}
 	
@@ -64,6 +66,7 @@ public class CourseController extends BaseController {
 		Long categoryId = formData.getCategoryId();
 		// check for category
 		findCategoryOrThrow(categoryId);
+		this.addRoleAttributes(model);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			String requiredError = getMessage("error.course.name_required");
             model.addAttribute("requiredError", requiredError);
@@ -95,6 +98,7 @@ public class CourseController extends BaseController {
 		model.addObject("pageTitle", getMessage("course.page_title_edit"));
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 	
@@ -102,6 +106,7 @@ public class CourseController extends BaseController {
 	public String postEdit(Model model, @ModelAttribute AddCourseForm formData, Errors errors) {
 		var course = findCourseOrThrow(formData.getCourseId());
 		var category = getCategoryOrThrow(course);
+		this.addRoleAttributes(model);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			String requiredError = getMessage("error.course.name_required");
             model.addAttribute("requiredError", requiredError);

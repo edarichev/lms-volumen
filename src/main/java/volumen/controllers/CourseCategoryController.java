@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import jakarta.annotation.security.RolesAllowed;
 import volumen.controllers.forms.AddCourseCategoryForm;
 import volumen.exceptions.CategoryNotFoundException;
 import volumen.model.CourseCategory;
@@ -45,9 +46,11 @@ public class CourseCategoryController extends BaseController {
 		model.addObject("courses", category.getCourses());
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("add")
 	ModelAndView getAdd() {
 		ModelAndView model = new ModelAndView(VIEW_CATEGORY_ADD);
@@ -55,14 +58,17 @@ public class CourseCategoryController extends BaseController {
 		model.addObject("formData", form);
 		model.addObject("categories", buildCategoryListForSelectElement(true, INDENT));
 		model.addObject("pageTitle", getMessage("category.page_title_add"));
+		this.addRoleAttributes(model);
 		return model;
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping("add")
 	String postAdd(Model model, @ModelAttribute AddCourseCategoryForm formData, Errors errors) {
 		model.addAttribute("categories", buildCategoryListForSelectElement(true, INDENT));
 		model.addAttribute("formData", formData);
 		model.addAttribute("pageTitle", getMessage("category.page_title_add"));
+		this.addRoleAttributes(model);
 		if (errors.hasErrors()) {
 			return VIEW_CATEGORY_ADD;
 		}
@@ -76,6 +82,7 @@ public class CourseCategoryController extends BaseController {
 		return "redirect:/category";
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/edit/{id}")
 	ModelAndView getEdit(@PathVariable("id") Long id) {
 		var category = findCategoryOrThrow(id);
@@ -84,6 +91,7 @@ public class CourseCategoryController extends BaseController {
 		form.setCategoryId(id);
 		form.setName(category.getName());
 		form.setDescription(category.getDescription());
+		form.setParentCategoryId(category.getParent() == null ? null : category.getParent().getId());
 
 		ModelAndView model = new ModelAndView();
 		model.addObject("formData", form);
@@ -91,16 +99,18 @@ public class CourseCategoryController extends BaseController {
 		model.addObject("pageTitle", getMessage("category.page_title_edit"));
 		model.setViewName(VIEW_EDIT_CATEGORY);
 		model.addObject("category", category);
+		this.addRoleAttributes(model);
 		return model;
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@PostMapping("/edit/{id}")
 	String postEdit(Model model, @ModelAttribute AddCourseCategoryForm formData, Errors errors) {
 		var category = findCategoryOrThrow(formData.getCategoryId());
 		model.addAttribute("categories", buildCategoryListForSelectElement(true, INDENT));
 		model.addAttribute("formData", formData);
 		model.addAttribute("pageTitle", getMessage("category.page_title_edit"));
-		
+		this.addRoleAttributes(model);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			String requiredError = getMessage("error.category.name_required");
 			model.addAttribute("requiredError", requiredError);
@@ -122,6 +132,7 @@ public class CourseCategoryController extends BaseController {
 		return "redirect:/category";
 	}
 
+	@RolesAllowed({"ADMIN", "TEACHER"})
 	@GetMapping("/delete/{id}")
 	public String deleteCategory(@PathVariable("id") long id, Model model) {
 		CourseCategory category = categoryRepo.findById(id).orElseThrow(() -> new CategoryNotFoundException(id));

@@ -1,35 +1,65 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8">
-<title>Volumen - Register</title>
-<link rel="stylesheet" th:href="@{/styles.css}" />
+<title th:text="#{register}"></title>
+<th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
 </head>
 <body>
-	<h1>Register</h1>
-
-	<form method="post" th:action="register" id="registerForm">
-	
-	<label for="username">Username: </label>
-	<input type="text" name="username" /><br/>
-	
-	<label for="password">Password: </label>
-	<input type="password" name="password" /><br/>
-	
-	<label for="confirm">Confirm password: </label>
-	<input type="password" name="confirm" /><br/>
-	
-	<label for="surname">Surname: </label>
-	<input type="text" name="surname" /><br/>
-	
-    <label for="firstName">First name: </label>
-    <input type="text" name="firstName" /><br/>
-
-    <label for="middleName">Middle name: </label>
-    <input type="text" name="middleName" /><br/>
-
-	<input type="submit" value="Register" />
-	</form>
+    <th:block th:insert="~{pagefragments.html :: header}"> </th:block>
+    
+    <form method="post" th:action="@{/register}" id="registerForm">
+    <table width="100%">
+       <tr>
+           <td width="33%">
+           </td>
+           <td width="33%" align="center">
+           	<h1 th:text="#{register}">Register</h1>
+            <table>
+                <tr>
+                    <td><label for="username" th:text="#{username}">Username: </label></td>
+                    <td><input type="text" name="username" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="password" th:text="#{password}">Password: </label></td>
+                    <td><input type="password" name="password" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="confirm" th:text="#{confirm_password}">Confirm password: </label></td>
+                    <td><input type="password" name="confirm" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="surname" th:text="#{surname}">Surname: </label></td>
+                    <td><input type="text" name="surname" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="firstName" th:text="#{firstname}">First name: </label></td>
+                    <td><input type="text" name="firstName" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><label for="middleName" th:text="#{middlename}">Middle name: </label></td>
+                    <td><input type="text" name="middleName" /></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" th:value="#{register}" /></td>
+                    <td></td>
+                </tr>
+            </table>
+				<p><a th:href="@{/login}" th:text="#{login}" ></a></p>	
+				</td>
+	           <td width="33%">
+	           </td>
+	       </tr>
+	    </table>
+    </form>
+    <th:block th:insert="~{pagefragments.html :: footer}"> </th:block>
 </body>
 </html>

@@ -4,6 +4,7 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <title th:text="${pageTitle}"></title>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 <th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
 </head>
 <body>
@@ -53,6 +54,9 @@
 		</table>
 		<input type="hidden" th:field="*{categoryId}" name="categoryId" id="categoryId" />
 	</form>
+    <script type="text/javascript">
+     CKEDITOR.replace('category_description');
+    </script>
 
 	<th:block th:insert="~{pagefragments.html :: footer}">
 	</th:block>

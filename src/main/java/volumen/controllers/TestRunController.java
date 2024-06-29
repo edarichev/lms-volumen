@@ -69,6 +69,7 @@ public class TestRunController extends BaseController {
 		model.addObject("pageTitle", getMessage("test.running") + ": " + lecture.getName());
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 
@@ -114,6 +115,7 @@ public class TestRunController extends BaseController {
 		model.addObject("pageTitle", getMessage("test.running") + ": " + lecture.getName());
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 

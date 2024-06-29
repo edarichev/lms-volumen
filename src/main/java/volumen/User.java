@@ -57,6 +57,16 @@ public class User {
 			arr[i] = getRoles().get(i);
 		return arr;
 	}
+	
+	public boolean hasAnyRole(String[] testRoles) {
+		if (testRoles == null)
+			return false;
+		for (int i = 0; i < testRoles.length; ++i) {
+			if (roles.contains(testRoles[i]))
+				return true;
+		}
+		return false;
+	}
 
 	public User(String userName, String encodedPassword, 
 			String surname, String firstName, String middleName) {

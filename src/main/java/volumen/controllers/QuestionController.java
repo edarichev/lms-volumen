@@ -77,6 +77,7 @@ public class QuestionController extends BaseController {
 		model.addObject("questionId", -1L);
 		model.addObject("lectureId", lecture.getId());
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 
@@ -107,6 +108,7 @@ public class QuestionController extends BaseController {
 		model.addObject("questionId", id);
 		model.addObject("lectureId", lecture.getId());
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 

@@ -22,6 +22,7 @@ public class HomeController extends BaseController {
 		ModelAndView model = new ModelAndView(VIEW_HOME);
 		model.addObject("categories", categories);
 		model.addObject("courses", courseRepo.findAll());
+		this.addRoleAttributes(model);
 		return model;
 	}
 }

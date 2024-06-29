@@ -58,6 +58,7 @@ public class LectureController extends BaseController {
 		model.addObject("lecture", lecture);
 		model.addObject("lectureContent", lectureRepo.getLectureContent(id));
 		model.addObject("chapters", chapters);
+		this.addRoleAttributes(model);
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		return model;
@@ -85,6 +86,7 @@ public class LectureController extends BaseController {
 		model.addObject("pageTitle", getMessage("lecture.page_title_add"));
 		model.addObject("course", course);
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 
@@ -98,6 +100,7 @@ public class LectureController extends BaseController {
 		Chapter chapter = findChapterOrThrow(chapterId);
 		Course course = getCourseOrThrow(chapter);
 		CourseCategory category = getCategoryOrThrow(course);
+		this.addRoleAttributes(model);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			model.addAttribute("chapters", course.getChapters());
 			model.addAttribute("chapter", chapter);
@@ -110,7 +113,8 @@ public class LectureController extends BaseController {
 		}
 		Lecture newLecture = formData.toLecture(chapterRepo);
 		lectureRepo.save(newLecture);
-		return "redirect:/unit/" + chapterId;
+		Long lectureId = newLecture.getId();
+		return "redirect:/lecture/edit/" + lectureId;
 	}
 	
 	@GetMapping("/edit/{id}")
@@ -135,6 +139,7 @@ public class LectureController extends BaseController {
 		model.addObject("chapters", course.getChapters());
 		model.addObject("course", course);
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 
@@ -145,7 +150,7 @@ public class LectureController extends BaseController {
 		Chapter chapter = getChapterOrThrow(lecture);
 		Course course = getCourseOrThrow(chapter);
 		CourseCategory category = getCategoryOrThrow(course);
-		
+		this.addRoleAttributes(model);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			model.addAttribute("pageTitle", getMessage("lecture.page_title_edit"));
 			model.addAttribute("formData", formData);

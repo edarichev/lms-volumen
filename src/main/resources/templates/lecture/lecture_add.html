@@ -79,7 +79,9 @@
 	   </td>
 	   <td style="width:25%;vertical-align: top;">
 	   <!-- manage resources -->
+	   <th:block th:if="${formData.lectureId > 0}">
 	   <div id="lecture_resource_manager"></div>
+	   </th:block>
 	   </td>
 	</tr>
     </table>
@@ -89,9 +91,9 @@
 	<th:block th:insert="~{pagefragments.html :: footer}">
 	</th:block>
 	<script type="text/javascript">
-	 CKEDITOR.replace( 'lecture_content' );
+	 CKEDITOR.replace('lecture_content');
     </script>
-    <script type="text/javascript">
+    <script type="text/javascript"  th:if="${formData.lectureId > 0}">
     var resourceManager = new ResourceManager('lecture_resource_manager', {
     	'lectureId' : "[[*{lectureId}]]",
     	'uploadService' : "[[@{/uploadservice/uploadimage/lecture}]]",

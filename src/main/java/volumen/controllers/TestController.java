@@ -114,7 +114,7 @@ public class TestController extends BaseController {
 		model.addObject("questions", getTestQuestions(test));
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
-		// questions
+		this.addRoleAttributes(model);
 		return model;
 	}
 	
@@ -130,6 +130,7 @@ public class TestController extends BaseController {
 		model.addAttribute("lecture", lecture);
 		model.addAttribute("chapter", chapter);
 		model.addAttribute("course", course);
+		this.addRoleAttributes(model);
 		// path
 		model.addAttribute("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
 		// move test

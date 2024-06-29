@@ -4,6 +4,7 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 <title th:text="${pageTitle}"></title>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 <th:block th:insert="~{pagefragments.html :: pagehead}"> </th:block>
 </head>
 <body>
@@ -24,7 +25,7 @@
 			</tr>
             <tr>
                 <td><label th:text="#{course.description_optional}"></label></td>
-                <td><textarea id="course_description" name="course_description" th:field="*{description}"></textarea></td>
+                <td><textarea id="course_description" name="course_description" th:field="*{description}" style="width:400px; height:200px;"></textarea></td>
             </tr>
 			<tr>
 				<td><label th:text="#{category.parent_category}"></label></td>
@@ -54,7 +55,9 @@
 		<input type="hidden" th:field="*{categoryId}" name="categoryId" id="categoryId" />
 		<input type="hidden" th:field="*{courseId}" name="courseId" id="courseId" />
 	</form>
-
+    <script type="text/javascript">
+     CKEDITOR.replace('course_description');
+    </script>
 	<th:block th:insert="~{pagefragments.html :: footer}">
 	</th:block>
 </body>

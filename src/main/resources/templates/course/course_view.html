@@ -12,20 +12,20 @@
 <tr>
 	<td valign="top" style="width:90%;">
 	<!-- CONTENT -->
-	    <h1 th:text="${course.name}"></h1>
+	    <h2 th:text="${course.name}"></h2>
 
         <div><th:block th:utext="${course.description}" /> </div>
     
 	    <th:block th:each="unit : ${chapters}">
-	        <h2>
+	        <h3>
 	            <a th:href="@{/unit/{id}(id=${unit.id})}" th:text="${unit.name}">UNIT</a>
-	        </h2>
+	        </h3>
 	        <p th:if="unit.description != null" th:utext="${unit.description}"></p>
 	        <ul>
 	        <th:block th:each="lec : ${unit.lectures}">
-	            <h3>
+	            <h4>
 	                <a th:href="@{/lecture/{id}(id=${lec.id})}" th:text="${lec.name}">LECTURE</a>
-	            </h3>
+	            </h4>
 	            <p th:utext="${lec.description}"></p>
 	        </th:block>
 	        </ul>

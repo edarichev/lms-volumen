@@ -48,6 +48,7 @@ public class ChapterController extends BaseController {
 		model.addObject("chapter", chapter);
 		// path
 		model.addObject("categoryPath", CategoryTreeBuilder.buildPathToRoot(getCategoriesList(), category));
+		this.addRoleAttributes(model);
 		return model;
 	}
 
@@ -67,6 +68,7 @@ public class ChapterController extends BaseController {
 		model.addObject("formData", formData);
 		model.addObject("pageTitle", getMessage("unit.page_title_add"));
 		model.addObject("course", course);
+		this.addRoleAttributes(model);
 		return model;
 	}
 
@@ -74,6 +76,7 @@ public class ChapterController extends BaseController {
 	public String getAdd(Model model, @ModelAttribute AddChapterForm formData, Errors errors) {
 		var courseId = formData.getCourseId();
 		Course course = courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException(courseId));
+		this.addRoleAttributes(model);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 
 			model.addAttribute("categories", buildCategoryListForSelectElement(false, INDENT));
@@ -105,6 +108,7 @@ public class ChapterController extends BaseController {
 		model.addObject("formData", formData);
 		model.addObject("pageTitle", getMessage("unit.page_title_edit"));
 		model.addObject("course", course);
+		this.addRoleAttributes(model);
 		return model;
 	}
 
@@ -113,6 +117,7 @@ public class ChapterController extends BaseController {
 		Long id = formData.getChapterId();
 		Chapter chapter = findChapterOrThrow(id);
 		Course course = getCourseOrThrow(chapter);
+		this.addRoleAttributes(model);
 		if (null == formData.getName() || formData.getName().isBlank()) {
 			model.addAttribute("formData", formData);
 			model.addAttribute("pageTitle", getMessage("unit.page_title_edit"));
