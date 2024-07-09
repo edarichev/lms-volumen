@@ -1,6 +1,6 @@
-# LMS Volumen
+# LMS Volumen - Система управления обучением
 
-Учебное приложение на Spring Framework.
+Учебное приложение в целях изучения Spring Framework.
 
 Используются:
 
@@ -15,6 +15,7 @@
 * REST контроллеры + динамические элементы с JavaScript + XMLHttpRequest
 * Загрузка файлов через XMLHttpRequest/MultipartFile
 
+Для запуска понадобится база данных:
 
 ```
 $ psql -d postgres -U postgres
